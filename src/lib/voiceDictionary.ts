@@ -72,6 +72,35 @@ const voiceDictionary = {
     prevParagraph: 'Previous paragraph.',
   },
 
+  welcome: {
+    greeting:
+      'Welcome to AccessReader. Press Enter or click Get Started to open the library.',
+    getStarted: 'Opening library.',
+  },
+
+  library: {
+    open: (count: number): string =>
+      `Library. ${count} books available. Press a number 1 through 9 to select, or use arrow keys. Press Escape to go back.`,
+    bookFocus: (num: number, title: string, author: string): string =>
+      `${num}. ${title} by ${author}.`,
+    selected: (title: string): string => `Opening ${title}.`,
+    back: 'Returning to welcome screen.',
+  },
+
+  reader: {
+    chapterStart: (bookTitle: string, chapterTitle: string): string =>
+      `Now reading ${bookTitle}, ${chapterTitle}.`,
+    paused: 'Paused.',
+    resumed: 'Resuming.',
+    nextParagraph: 'Next paragraph.',
+    prevParagraph: 'Previous paragraph.',
+    nextChapter: (title: string): string => `Next chapter: ${title}.`,
+    prevChapter: (title: string): string => `Previous chapter: ${title}.`,
+    endOfChapter: 'End of chapter.',
+    loading: 'Loading chapter.',
+    back: 'Returning to library.',
+  },
+
   typingEditor: {
     title: 'Search',
     idle: 'Type to search...',

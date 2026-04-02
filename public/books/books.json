@@ -1,65 +1,2596 @@
 [
   {
-    "id": "alice-adventures-in-wonderland",
-    "title": "Alice's Adventures in Wonderland",
-    "author": "Lewis Carroll",
+    "id": "frankenstein-or-the-modern-prometheus",
+    "title": "Frankenstein; or, the modern prometheus",
+    "author": "Mary Wollstonecraft Shelley",
+    "filename": "Frankenstein; or, the modern prometheus.txt",
+    "chapterCount": 24,
     "chapters": [
       {
-        "id": "chapter-1",
-        "title": "Chapter 1: Down the Rabbit-Hole",
-        "paragraphs": [
-          "Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, \"and what is the use of a book,\" thought Alice \"without pictures or conversations?\"",
-          "So she was considering in her own mind, as well as she could, for the hot day made her feel very sleepy and stupid, whether the pleasure of making a daisy-chain would be worth the trouble of getting up and picking the daisies, when suddenly a White Rabbit with pink eyes ran close by her.",
-          "There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, \"Oh dear! Oh dear! I shall be late!\" But when the Rabbit actually took a watch out of its waistcoat-pocket, and looked at it, and then hurried on, Alice started to her feet, for it flashed across her mind that she had never before seen a rabbit with either a waistcoat-pocket or a watch to take out of it, and burning with curiosity, she ran across the field after it.",
-          "In another moment down went Alice after it, never once considering how in the world she was to get out again.",
-          "The rabbit-hole went straight on like a tunnel for some way, and then dipped suddenly down, so suddenly that Alice had not a moment to think about stopping herself before she found herself falling down a very deep well.",
-          "Either the well was very deep, or she fell very slowly, for she had plenty of time as she went down to look about her and to wonder what was going to happen next. First, she tried to look down and make out what she was coming to, but it was too dark to see anything; then she looked at the sides of the well, and noticed that they were filled with cupboards and book-shelves. Here and there she saw maps and pictures hung upon pegs. She took down a jar from one of the shelves as she passed; it was labelled \"ORANGE MARMALADE,\" but to her great disappointment it was empty.",
-          "\"Well!\" thought Alice to herself, \"after such a fall as this, I shall think nothing of tumbling down stairs! How brave they'll all think me at home! Why, I wouldn't say anything about it, even if I fell off the top of the house!\"",
-          "Down, down, down. Would the fall never come to an end? \"I wonder how many miles I've fallen by this time?\" she said aloud. \"I must be getting somewhere near the centre of the earth. Let me see: that would be four thousand miles down, I think.\" Though this was hardly the best time for showing off her lessons, it was good practice to say it over.",
-          "Presently she began again. \"I wonder if I shall fall right through the earth! How funny it'll seem to come out among the people that walk with their heads downward! The Antipathies, I think.\" She was rather glad there was no one listening, as it did not sound at all the right word. \"But I shall have to ask them what the name of the country is, you know. Please, Ma'am, is this New Zealand or Australia?\"",
-          "Down, down, down. There was nothing else to do, so Alice soon began talking again. \"Dinah'll miss me very much to-night, I should think!\" Dinah was the cat. \"I hope they'll remember her saucer of milk at tea-time. Dinah my dear! I wish you were down here with me! There are no mice in the air, I'm afraid, but you might catch a bat, and that's very like a mouse, you know. But do cats eat bats, I wonder?\""
-        ]
+        "id": "ch1",
+        "title": "Chapter 1",
+        "lineStart": 652,
+        "lineEnd": 816
+      },
+      {
+        "id": "ch2",
+        "title": "Chapter 2",
+        "lineStart": 818,
+        "lineEnd": 1027
+      },
+      {
+        "id": "ch3",
+        "title": "Chapter 3",
+        "lineStart": 1029,
+        "lineEnd": 1282
+      },
+      {
+        "id": "ch4",
+        "title": "Chapter 4",
+        "lineStart": 1284,
+        "lineEnd": 1518
+      },
+      {
+        "id": "ch5",
+        "title": "Chapter 5",
+        "lineStart": 1520,
+        "lineEnd": 1756
+      },
+      {
+        "id": "ch6",
+        "title": "Chapter 6",
+        "lineStart": 1758,
+        "lineEnd": 2022
+      },
+      {
+        "id": "ch7",
+        "title": "Chapter 7",
+        "lineStart": 2024,
+        "lineEnd": 2391
+      },
+      {
+        "id": "ch8",
+        "title": "Chapter 8",
+        "lineStart": 2393,
+        "lineEnd": 2696
+      },
+      {
+        "id": "ch9",
+        "title": "Chapter 9",
+        "lineStart": 2698,
+        "lineEnd": 2905
+      },
+      {
+        "id": "ch10",
+        "title": "Chapter 10",
+        "lineStart": 2907,
+        "lineEnd": 3128
+      },
+      {
+        "id": "ch11",
+        "title": "Chapter 11",
+        "lineStart": 3130,
+        "lineEnd": 3392
+      },
+      {
+        "id": "ch12",
+        "title": "Chapter 12",
+        "lineStart": 3394,
+        "lineEnd": 3599
+      },
+      {
+        "id": "ch13",
+        "title": "Chapter 13",
+        "lineStart": 3601,
+        "lineEnd": 3803
+      },
+      {
+        "id": "ch14",
+        "title": "Chapter 14",
+        "lineStart": 3805,
+        "lineEnd": 3987
+      },
+      {
+        "id": "ch15",
+        "title": "Chapter 15",
+        "lineStart": 3989,
+        "lineEnd": 4296
+      },
+      {
+        "id": "ch16",
+        "title": "Chapter 16",
+        "lineStart": 4298,
+        "lineEnd": 4610
+      },
+      {
+        "id": "ch17",
+        "title": "Chapter 17",
+        "lineStart": 4612,
+        "lineEnd": 4793
+      },
+      {
+        "id": "ch18",
+        "title": "Chapter 18",
+        "lineStart": 4795,
+        "lineEnd": 5074
+      },
+      {
+        "id": "ch19",
+        "title": "Chapter 19",
+        "lineStart": 5076,
+        "lineEnd": 5325
+      },
+      {
+        "id": "ch20",
+        "title": "Chapter 20",
+        "lineStart": 5327,
+        "lineEnd": 5653
+      },
+      {
+        "id": "ch21",
+        "title": "Chapter 21",
+        "lineStart": 5655,
+        "lineEnd": 6019
+      },
+      {
+        "id": "ch22",
+        "title": "Chapter 22",
+        "lineStart": 6021,
+        "lineEnd": 6360
+      },
+      {
+        "id": "ch23",
+        "title": "Chapter 23",
+        "lineStart": 6362,
+        "lineEnd": 6608
+      },
+      {
+        "id": "ch24",
+        "title": "Chapter 24",
+        "lineStart": 6610,
+        "lineEnd": 7390
       }
     ]
   },
   {
-    "id": "gift-of-the-magi",
-    "title": "The Gift of the Magi",
-    "author": "O. Henry",
+    "id": "moby-dick-or-the-whale",
+    "title": "Moby Dick; Or, The Whale",
+    "author": "Herman Melville",
+    "filename": "Moby Dick; Or, The Whale.txt",
+    "chapterCount": 150,
     "chapters": [
       {
-        "id": "opening",
-        "title": "Opening",
-        "paragraphs": [
-          "One dollar and eighty-seven cents. That was all. And sixty cents of it was in pennies. Pennies saved one and two at a time by bulldozing the grocer and the vegetable man and the butcher until one's cheeks burned with the silent imputation of parsimony that such close dealing implied. Three times Della counted it. One dollar and eighty-seven cents. And the next day would be Christmas.",
-          "There was clearly nothing to do but flop down on the shabby little couch and howl. So Della did it. Which instigates the moral reflection that life is made up of sobs, sniffles, and smiles, with sniffles predominating.",
-          "While the mistress of the home is gradually subsiding from the first stage to the second, take a look at the home. A furnished flat at eight dollars per week. It did not exactly beggar description, but it certainly had that word on the lookout for the mendicancy squad.",
-          "In the vestibule below was a letter-box into which no letter would go, and an electric button from which no mortal finger could coax a ring. Also appertaining thereunto was a card bearing the name \"Mr. James Dillingham Young.\"",
-          "The Dillingham had been flung to the breeze during a former period of prosperity when its possessor was being paid thirty dollars per week. Now, when the income was shrunk to twenty dollars, they were thinking seriously of contracting to a modest and unassuming D. But whenever Mr. James Dillingham Young came home and reached his flat above he was called Jim and greatly hugged by Mrs. James Dillingham Young, already introduced to you as Della.",
-          "Della finished her cry and attended to her cheeks with the powder rag. She stood by the window and looked out dully at a gray cat walking a gray fence in a gray backyard. Tomorrow would be Christmas Day, and she had only one dollar and eighty-seven cents with which to buy Jim a present. She had been saving every penny she could for months, with this result.",
-          "There was a pier glass between the windows of the room. Perhaps you have seen a pier glass in an eight-dollar flat. A very thin and very agile person may, by observing his reflection in a rapid sequence of longitudinal strips, obtain a fairly accurate conception of his looks. Della, being slender, had mastered the art.",
-          "Suddenly she whirled from the window and stood before the glass. Her eyes were shining brilliantly, but her face had lost its color within twenty seconds. Rapidly she pulled down her hair and let it fall to its full length.",
-          "Now, there were two possessions of the James Dillingham Youngs in which they both took a mighty pride. One was Jim's gold watch that had been his father's and his grandfather's. The other was Della's hair. Had the queen of Sheba lived in the flat across the airshaft, Della would have let her hair hang out the window some day to dry just to depreciate Her Majesty's jewels and gifts.",
-          "So now Della's beautiful hair fell about her rippling and shining like a cascade of brown waters. It reached below her knee and made itself almost a garment for her. And then she did it up again nervously and quickly. Once she faltered for a minute and stood still while a tear or two splashed on the worn red carpet."
-        ]
+        "id": "ch1",
+        "title": "Chapter 1: Loomings.",
+        "lineStart": 844,
+        "lineEnd": 1043
+      },
+      {
+        "id": "ch2",
+        "title": "Chapter 2: The Carpet-Bag.",
+        "lineStart": 1045,
+        "lineEnd": 1177
+      },
+      {
+        "id": "ch3",
+        "title": "Chapter 3: The Spouter-Inn.",
+        "lineStart": 1179,
+        "lineEnd": 1747
+      },
+      {
+        "id": "ch4",
+        "title": "Chapter 4: The Counterpane.",
+        "lineStart": 1749,
+        "lineEnd": 1891
+      },
+      {
+        "id": "ch5",
+        "title": "Chapter 5: Breakfast.",
+        "lineStart": 1893,
+        "lineEnd": 1969
+      },
+      {
+        "id": "ch6",
+        "title": "Chapter 6: The Street.",
+        "lineStart": 1971,
+        "lineEnd": 2054
+      },
+      {
+        "id": "ch7",
+        "title": "Chapter 7: The Chapel.",
+        "lineStart": 2056,
+        "lineEnd": 2148
+      },
+      {
+        "id": "ch8",
+        "title": "Chapter 8: The Pulpit.",
+        "lineStart": 2150,
+        "lineEnd": 2240
+      },
+      {
+        "id": "ch9",
+        "title": "Chapter 9: The Sermon.",
+        "lineStart": 2242,
+        "lineEnd": 2571
+      },
+      {
+        "id": "ch10",
+        "title": "Chapter 10: A Bosom Friend.",
+        "lineStart": 2573,
+        "lineEnd": 2713
+      },
+      {
+        "id": "ch11",
+        "title": "Chapter 11: Nightgown.",
+        "lineStart": 2715,
+        "lineEnd": 2777
+      },
+      {
+        "id": "ch12",
+        "title": "Chapter 12: Biographical.",
+        "lineStart": 2779,
+        "lineEnd": 2863
+      },
+      {
+        "id": "ch13",
+        "title": "Chapter 13: Wheelbarrow.",
+        "lineStart": 2865,
+        "lineEnd": 3027
+      },
+      {
+        "id": "ch14",
+        "title": "Chapter 14: Nantucket.",
+        "lineStart": 3029,
+        "lineEnd": 3099
+      },
+      {
+        "id": "ch15",
+        "title": "Chapter 15: Chowder.",
+        "lineStart": 3101,
+        "lineEnd": 3220
+      },
+      {
+        "id": "ch16",
+        "title": "Chapter 16: The Ship.",
+        "lineStart": 3222,
+        "lineEnd": 3781
+      },
+      {
+        "id": "ch17",
+        "title": "Chapter 17: The Ramadan.",
+        "lineStart": 3783,
+        "lineEnd": 4009
+      },
+      {
+        "id": "ch18",
+        "title": "Chapter 18: His Mark.",
+        "lineStart": 4011,
+        "lineEnd": 4161
+      },
+      {
+        "id": "ch19",
+        "title": "Chapter 19: The Prophet.",
+        "lineStart": 4163,
+        "lineEnd": 4310
+      },
+      {
+        "id": "ch20",
+        "title": "Chapter 20: All Astir.",
+        "lineStart": 4312,
+        "lineEnd": 4399
+      },
+      {
+        "id": "ch21",
+        "title": "Chapter 21: Going Aboard.",
+        "lineStart": 4401,
+        "lineEnd": 4547
+      },
+      {
+        "id": "ch22",
+        "title": "Chapter 22: Merry Christmas.",
+        "lineStart": 4549,
+        "lineEnd": 4716
+      },
+      {
+        "id": "ch23",
+        "title": "Chapter 23: The Lee Shore.",
+        "lineStart": 4718,
+        "lineEnd": 4756
+      },
+      {
+        "id": "ch24",
+        "title": "Chapter 24: The Advocate.",
+        "lineStart": 4758,
+        "lineEnd": 4932
+      },
+      {
+        "id": "ch25",
+        "title": "Chapter 25: Postscript.",
+        "lineStart": 4934,
+        "lineEnd": 4965
+      },
+      {
+        "id": "ch26",
+        "title": "Chapter 26: Knights and Squires.",
+        "lineStart": 4967,
+        "lineEnd": 5078
+      },
+      {
+        "id": "ch27",
+        "title": "Chapter 27: Knights and Squires.",
+        "lineStart": 5080,
+        "lineEnd": 5232
+      },
+      {
+        "id": "ch28",
+        "title": "Chapter 28: Ahab.",
+        "lineStart": 5234,
+        "lineEnd": 5361
+      },
+      {
+        "id": "ch29",
+        "title": "Chapter 29: Enter Ahab; to Him, Stubb.",
+        "lineStart": 5363,
+        "lineEnd": 5474
+      },
+      {
+        "id": "ch30",
+        "title": "Chapter 30: The Pipe.",
+        "lineStart": 5476,
+        "lineEnd": 5505
+      },
+      {
+        "id": "ch31",
+        "title": "Chapter 31: Queen Mab.",
+        "lineStart": 5507,
+        "lineEnd": 5580
+      },
+      {
+        "id": "ch32",
+        "title": "Chapter 32: Cetology.",
+        "lineStart": 5582,
+        "lineEnd": 5741
+      },
+      {
+        "id": "ch33",
+        "title": "Book I: (_Folio_), CHAPTER I. (_Sperm Whale_).—This whale, among the",
+        "lineStart": 5743,
+        "lineEnd": 5768
+      },
+      {
+        "id": "ch34",
+        "title": "Book I: (_Folio_), CHAPTER II. (_Right Whale_).—In one respect this is",
+        "lineStart": 5770,
+        "lineEnd": 5795
+      },
+      {
+        "id": "ch35",
+        "title": "Book I: (_Folio_), CHAPTER III. (_Fin-Back_).—Under this head I reckon",
+        "lineStart": 5797,
+        "lineEnd": 5863
+      },
+      {
+        "id": "ch36",
+        "title": "Book I: (_Folio_) CHAPTER IV. (_Hump Back_).—This whale is often seen",
+        "lineStart": 5865,
+        "lineEnd": 5873
+      },
+      {
+        "id": "ch37",
+        "title": "Book I: (_Folio_), CHAPTER V. (_Razor Back_).—Of this whale little is",
+        "lineStart": 5875,
+        "lineEnd": 5880
+      },
+      {
+        "id": "ch38",
+        "title": "Book I: (_Folio_), CHAPTER VI. (_Sulphur Bottom_).—Another retiring",
+        "lineStart": 5882,
+        "lineEnd": 5902
+      },
+      {
+        "id": "ch39",
+        "title": "Book II: (_Octavo_), CHAPTER I. (_Grampus_).—Though this fish, whose",
+        "lineStart": 5904,
+        "lineEnd": 5914
+      },
+      {
+        "id": "ch40",
+        "title": "Book II: (_Octavo_), CHAPTER II. (_Black Fish_).—I give the popular",
+        "lineStart": 5916,
+        "lineEnd": 5932
+      },
+      {
+        "id": "ch41",
+        "title": "Book II: (_Octavo_), CHAPTER III. (_Narwhale_), that is, _Nostril",
+        "lineStart": 5934,
+        "lineEnd": 5975
+      },
+      {
+        "id": "ch42",
+        "title": "Book II: (_Octavo_), CHAPTER IV. (_Killer_).—Of this whale little is",
+        "lineStart": 5977,
+        "lineEnd": 5986
+      },
+      {
+        "id": "ch43",
+        "title": "Book II: (_Octavo_), CHAPTER V. (_Thrasher_).—This gentleman is famous",
+        "lineStart": 5988,
+        "lineEnd": 6006
+      },
+      {
+        "id": "ch44",
+        "title": "Book III: (_Duodecimo_), CHAPTER 1. (_Huzza Porpoise_).—This is the",
+        "lineStart": 6008,
+        "lineEnd": 6026
+      },
+      {
+        "id": "ch45",
+        "title": "Book III: (_Duodecimo_), CHAPTER II. (_Algerine Porpoise_).—A pirate.",
+        "lineStart": 6028,
+        "lineEnd": 6032
+      },
+      {
+        "id": "ch46",
+        "title": "Book III: (_Duodecimo_), CHAPTER III. (_Mealy-mouthed Porpoise_).—The",
+        "lineStart": 6034,
+        "lineEnd": 6081
+      },
+      {
+        "id": "ch47",
+        "title": "Chapter 33: The Specksnyder.",
+        "lineStart": 6083,
+        "lineEnd": 6179
+      },
+      {
+        "id": "ch48",
+        "title": "Chapter 34: The Cabin-Table.",
+        "lineStart": 6181,
+        "lineEnd": 6381
+      },
+      {
+        "id": "ch49",
+        "title": "Chapter 35: The Mast-Head.",
+        "lineStart": 6383,
+        "lineEnd": 6620
+      },
+      {
+        "id": "ch50",
+        "title": "Chapter 36: The Quarter-Deck.",
+        "lineStart": 6622,
+        "lineEnd": 6925
+      },
+      {
+        "id": "ch51",
+        "title": "Chapter 37: Sunset.",
+        "lineStart": 6927,
+        "lineEnd": 6974
+      },
+      {
+        "id": "ch52",
+        "title": "Chapter 38: Dusk.",
+        "lineStart": 6976,
+        "lineEnd": 7013
+      },
+      {
+        "id": "ch53",
+        "title": "Chapter 39: First Night-Watch.",
+        "lineStart": 7015,
+        "lineEnd": 7047
+      },
+      {
+        "id": "ch54",
+        "title": "Chapter 40: Midnight, Forecastle.",
+        "lineStart": 7049,
+        "lineEnd": 7257
+      },
+      {
+        "id": "ch55",
+        "title": "Chapter 41: Moby Dick.",
+        "lineStart": 7259,
+        "lineEnd": 7615
+      },
+      {
+        "id": "ch56",
+        "title": "Chapter 42: The Whiteness of the Whale.",
+        "lineStart": 7617,
+        "lineEnd": 7970
+      },
+      {
+        "id": "ch57",
+        "title": "Chapter 43: Hark!",
+        "lineStart": 7972,
+        "lineEnd": 8018
+      },
+      {
+        "id": "ch58",
+        "title": "Chapter 44: The Chart.",
+        "lineStart": 8020,
+        "lineEnd": 8215
+      },
+      {
+        "id": "ch59",
+        "title": "Chapter 45: The Affidavit.",
+        "lineStart": 8217,
+        "lineEnd": 8544
+      },
+      {
+        "id": "ch60",
+        "title": "Chapter 46: Surmises.",
+        "lineStart": 8546,
+        "lineEnd": 8642
+      },
+      {
+        "id": "ch61",
+        "title": "Chapter 47: The Mat-Maker.",
+        "lineStart": 8644,
+        "lineEnd": 8743
+      },
+      {
+        "id": "ch62",
+        "title": "Chapter 48: The First Lowering.",
+        "lineStart": 8745,
+        "lineEnd": 9145
+      },
+      {
+        "id": "ch63",
+        "title": "Chapter 49: The Hyena.",
+        "lineStart": 9147,
+        "lineEnd": 9229
+      },
+      {
+        "id": "ch64",
+        "title": "Chapter 50: Ahab’s Boat and Crew. Fedallah.",
+        "lineStart": 9231,
+        "lineEnd": 9326
+      },
+      {
+        "id": "ch65",
+        "title": "Chapter 51: The Spirit-Spout.",
+        "lineStart": 9328,
+        "lineEnd": 9474
+      },
+      {
+        "id": "ch66",
+        "title": "Chapter 52: The Albatross.",
+        "lineStart": 9476,
+        "lineEnd": 9546
+      },
+      {
+        "id": "ch67",
+        "title": "Chapter 53: The Gam.",
+        "lineStart": 9548,
+        "lineEnd": 9697
+      },
+      {
+        "id": "ch68",
+        "title": "Chapter 54: The Town-Ho’s Story.",
+        "lineStart": 9699,
+        "lineEnd": 10512
+      },
+      {
+        "id": "ch69",
+        "title": "Chapter 55: Of the Monstrous Pictures of Whales.",
+        "lineStart": 10514,
+        "lineEnd": 10695
+      },
+      {
+        "id": "ch70",
+        "title": "Chapter 56: Of the Less Erroneous Pictures of Whales, and the True",
+        "lineStart": 10697,
+        "lineEnd": 10706
+      },
+      {
+        "id": "ch71",
+        "title": "Chapter C: olnett and Cuvier have been referred to. Huggins’s is far",
+        "lineStart": 10708,
+        "lineEnd": 10820
+      },
+      {
+        "id": "ch72",
+        "title": "Chapter 57: Of Whales in Paint; in Teeth; in Wood; in Sheet-Iron; in",
+        "lineStart": 10822,
+        "lineEnd": 10921
+      },
+      {
+        "id": "ch73",
+        "title": "Chapter 58: Brit.",
+        "lineStart": 10923,
+        "lineEnd": 11022
+      },
+      {
+        "id": "ch74",
+        "title": "Chapter 59: Squid.",
+        "lineStart": 11024,
+        "lineEnd": 11120
+      },
+      {
+        "id": "ch75",
+        "title": "Chapter 60: The Line.",
+        "lineStart": 11122,
+        "lineEnd": 11255
+      },
+      {
+        "id": "ch76",
+        "title": "Chapter 61: Stubb Kills a Whale.",
+        "lineStart": 11257,
+        "lineEnd": 11451
+      },
+      {
+        "id": "ch77",
+        "title": "Chapter 62: The Dart.",
+        "lineStart": 11453,
+        "lineEnd": 11507
+      },
+      {
+        "id": "ch78",
+        "title": "Chapter 63: The Crotch.",
+        "lineStart": 11509,
+        "lineEnd": 11558
+      },
+      {
+        "id": "ch79",
+        "title": "Chapter 64: Stubb’s Supper.",
+        "lineStart": 11560,
+        "lineEnd": 11883
+      },
+      {
+        "id": "ch80",
+        "title": "Chapter 65: The Whale as a Dish.",
+        "lineStart": 11885,
+        "lineEnd": 11976
+      },
+      {
+        "id": "ch81",
+        "title": "Chapter 66: The Shark Massacre.",
+        "lineStart": 11978,
+        "lineEnd": 12037
+      },
+      {
+        "id": "ch82",
+        "title": "Chapter 67: Cutting In.",
+        "lineStart": 12039,
+        "lineEnd": 12104
+      },
+      {
+        "id": "ch83",
+        "title": "Chapter 68: The Blanket.",
+        "lineStart": 12106,
+        "lineEnd": 12217
+      },
+      {
+        "id": "ch84",
+        "title": "Chapter 69: The Funeral.",
+        "lineStart": 12219,
+        "lineEnd": 12266
+      },
+      {
+        "id": "ch85",
+        "title": "Chapter 70: The Sphynx.",
+        "lineStart": 12268,
+        "lineEnd": 12358
+      },
+      {
+        "id": "ch86",
+        "title": "Chapter 71: The Jeroboam’s Story.",
+        "lineStart": 12360,
+        "lineEnd": 12597
+      },
+      {
+        "id": "ch87",
+        "title": "Chapter 72: The Monkey-Rope.",
+        "lineStart": 12599,
+        "lineEnd": 12763
+      },
+      {
+        "id": "ch88",
+        "title": "Chapter 73: Stubb and Flask kill a Right Whale; and Then Have a Talk",
+        "lineStart": 12765,
+        "lineEnd": 12994
+      },
+      {
+        "id": "ch89",
+        "title": "Chapter 74: The Sperm Whale’s Head—Contrasted View.",
+        "lineStart": 12996,
+        "lineEnd": 13147
+      },
+      {
+        "id": "ch90",
+        "title": "Chapter 75: The Right Whale’s Head—Contrasted View.",
+        "lineStart": 13149,
+        "lineEnd": 13265
+      },
+      {
+        "id": "ch91",
+        "title": "Chapter 76: The Battering-Ram.",
+        "lineStart": 13267,
+        "lineEnd": 13347
+      },
+      {
+        "id": "ch92",
+        "title": "Chapter 77: The Great Heidelburgh Tun.",
+        "lineStart": 13349,
+        "lineEnd": 13418
+      },
+      {
+        "id": "ch93",
+        "title": "Chapter 78: Cistern and Buckets.",
+        "lineStart": 13420,
+        "lineEnd": 13578
+      },
+      {
+        "id": "ch94",
+        "title": "Chapter 79: The Prairie.",
+        "lineStart": 13580,
+        "lineEnd": 13669
+      },
+      {
+        "id": "ch95",
+        "title": "Chapter 80: The Nut.",
+        "lineStart": 13671,
+        "lineEnd": 13757
+      },
+      {
+        "id": "ch96",
+        "title": "Chapter 81: The Pequod Meets The Virgin.",
+        "lineStart": 13759,
+        "lineEnd": 14181
+      },
+      {
+        "id": "ch97",
+        "title": "Chapter 82: The Honor and Glory of Whaling.",
+        "lineStart": 14183,
+        "lineEnd": 14291
+      },
+      {
+        "id": "ch98",
+        "title": "Chapter 83: Jonah Historically Regarded.",
+        "lineStart": 14293,
+        "lineEnd": 14366
+      },
+      {
+        "id": "ch99",
+        "title": "Chapter 84: Pitchpoling.",
+        "lineStart": 14368,
+        "lineEnd": 14449
+      },
+      {
+        "id": "ch100",
+        "title": "Chapter 85: The Fountain.",
+        "lineStart": 14451,
+        "lineEnd": 14636
+      },
+      {
+        "id": "ch101",
+        "title": "Chapter 86: The Tail.",
+        "lineStart": 14638,
+        "lineEnd": 14812
+      },
+      {
+        "id": "ch102",
+        "title": "Chapter 87: The Grand Armada.",
+        "lineStart": 14814,
+        "lineEnd": 15265
+      },
+      {
+        "id": "ch103",
+        "title": "Chapter 88: Schools and Schoolmasters.",
+        "lineStart": 15267,
+        "lineEnd": 15386
+      },
+      {
+        "id": "ch104",
+        "title": "Chapter 89: Fast-Fish and Loose-Fish.",
+        "lineStart": 15388,
+        "lineEnd": 15530
+      },
+      {
+        "id": "ch105",
+        "title": "Chapter 90: Heads or Tails.",
+        "lineStart": 15532,
+        "lineEnd": 15652
+      },
+      {
+        "id": "ch106",
+        "title": "Chapter 91: The Pequod Meets The Rose-Bud.",
+        "lineStart": 15654,
+        "lineEnd": 15932
+      },
+      {
+        "id": "ch107",
+        "title": "Chapter 92: Ambergris.",
+        "lineStart": 15934,
+        "lineEnd": 16024
+      },
+      {
+        "id": "ch108",
+        "title": "Chapter 93: The Castaway.",
+        "lineStart": 16026,
+        "lineEnd": 16180
+      },
+      {
+        "id": "ch109",
+        "title": "Chapter 94: A Squeeze of the Hand.",
+        "lineStart": 16182,
+        "lineEnd": 16308
+      },
+      {
+        "id": "ch110",
+        "title": "Chapter 95: The Cassock.",
+        "lineStart": 16310,
+        "lineEnd": 16357
+      },
+      {
+        "id": "ch111",
+        "title": "Chapter 96: The Try-Works.",
+        "lineStart": 16359,
+        "lineEnd": 16526
+      },
+      {
+        "id": "ch112",
+        "title": "Chapter 97: The Lamp.",
+        "lineStart": 16528,
+        "lineEnd": 16553
+      },
+      {
+        "id": "ch113",
+        "title": "Chapter 98: Stowing Down and Clearing Up.",
+        "lineStart": 16555,
+        "lineEnd": 16652
+      },
+      {
+        "id": "ch114",
+        "title": "Chapter 99: The Doubloon.",
+        "lineStart": 16654,
+        "lineEnd": 16877
+      },
+      {
+        "id": "ch115",
+        "title": "Chapter 100: Leg and Arm.",
+        "lineStart": 16879,
+        "lineEnd": 17155
+      },
+      {
+        "id": "ch116",
+        "title": "Chapter 101: The Decanter.",
+        "lineStart": 17157,
+        "lineEnd": 17321
+      },
+      {
+        "id": "ch117",
+        "title": "Chapter 102: A Bower in the Arsacides.",
+        "lineStart": 17323,
+        "lineEnd": 17475
+      },
+      {
+        "id": "ch118",
+        "title": "Chapter 103: Measurement of The Whale’s Skeleton.",
+        "lineStart": 17477,
+        "lineEnd": 17567
+      },
+      {
+        "id": "ch119",
+        "title": "Chapter 104: The Fossil Whale.",
+        "lineStart": 17569,
+        "lineEnd": 17707
+      },
+      {
+        "id": "ch120",
+        "title": "Chapter 105: Does the Whale’s Magnitude Diminish?—Will He Perish?",
+        "lineStart": 17709,
+        "lineEnd": 17862
+      },
+      {
+        "id": "ch121",
+        "title": "Chapter 106: Ahab’s Leg.",
+        "lineStart": 17864,
+        "lineEnd": 17952
+      },
+      {
+        "id": "ch122",
+        "title": "Chapter 107: The Carpenter.",
+        "lineStart": 17954,
+        "lineEnd": 18053
+      },
+      {
+        "id": "ch123",
+        "title": "Chapter 108: Ahab and the Carpenter.",
+        "lineStart": 18055,
+        "lineEnd": 18232
+      },
+      {
+        "id": "ch124",
+        "title": "Chapter 109: Ahab and Starbuck in the Cabin.",
+        "lineStart": 18234,
+        "lineEnd": 18338
+      },
+      {
+        "id": "ch125",
+        "title": "Chapter 110: Queequeg in His Coffin.",
+        "lineStart": 18340,
+        "lineEnd": 18550
+      },
+      {
+        "id": "ch126",
+        "title": "Chapter 111: The Pacific.",
+        "lineStart": 18552,
+        "lineEnd": 18595
+      },
+      {
+        "id": "ch127",
+        "title": "Chapter 112: The Blacksmith.",
+        "lineStart": 18597,
+        "lineEnd": 18690
+      },
+      {
+        "id": "ch128",
+        "title": "Chapter 113: The Forge.",
+        "lineStart": 18692,
+        "lineEnd": 18830
+      },
+      {
+        "id": "ch129",
+        "title": "Chapter 114: The Gilder.",
+        "lineStart": 18832,
+        "lineEnd": 18902
+      },
+      {
+        "id": "ch130",
+        "title": "Chapter 115: The Pequod Meets The Bachelor.",
+        "lineStart": 18904,
+        "lineEnd": 19000
+      },
+      {
+        "id": "ch131",
+        "title": "Chapter 116: The Dying Whale.",
+        "lineStart": 19002,
+        "lineEnd": 19055
+      },
+      {
+        "id": "ch132",
+        "title": "Chapter 117: The Whale Watch.",
+        "lineStart": 19057,
+        "lineEnd": 19114
+      },
+      {
+        "id": "ch133",
+        "title": "Chapter 118: The Quadrant.",
+        "lineStart": 19116,
+        "lineEnd": 19201
+      },
+      {
+        "id": "ch134",
+        "title": "Chapter 119: The Candles.",
+        "lineStart": 19203,
+        "lineEnd": 19467
+      },
+      {
+        "id": "ch135",
+        "title": "Chapter 120: The Deck Towards the End of the First Night Watch.",
+        "lineStart": 19469,
+        "lineEnd": 19494
+      },
+      {
+        "id": "ch136",
+        "title": "Chapter 121: Midnight.—The Forecastle Bulwarks.",
+        "lineStart": 19496,
+        "lineEnd": 19554
+      },
+      {
+        "id": "ch137",
+        "title": "Chapter 122: Midnight Aloft.—Thunder and Lightning.",
+        "lineStart": 19556,
+        "lineEnd": 19563
+      },
+      {
+        "id": "ch138",
+        "title": "Chapter 123: The Musket.",
+        "lineStart": 19565,
+        "lineEnd": 19684
+      },
+      {
+        "id": "ch139",
+        "title": "Chapter 124: The Needle.",
+        "lineStart": 19686,
+        "lineEnd": 19816
+      },
+      {
+        "id": "ch140",
+        "title": "Chapter 125: The Log and Line.",
+        "lineStart": 19818,
+        "lineEnd": 19951
+      },
+      {
+        "id": "ch141",
+        "title": "Chapter 126: The Life-Buoy.",
+        "lineStart": 19953,
+        "lineEnd": 20091
+      },
+      {
+        "id": "ch142",
+        "title": "Chapter 127: The Deck.",
+        "lineStart": 20093,
+        "lineEnd": 20186
+      },
+      {
+        "id": "ch143",
+        "title": "Chapter 128: The Pequod Meets The Rachel.",
+        "lineStart": 20188,
+        "lineEnd": 20330
+      },
+      {
+        "id": "ch144",
+        "title": "Chapter 129: The Cabin.",
+        "lineStart": 20332,
+        "lineEnd": 20392
+      },
+      {
+        "id": "ch145",
+        "title": "Chapter 130: The Hat.",
+        "lineStart": 20394,
+        "lineEnd": 20556
+      },
+      {
+        "id": "ch146",
+        "title": "Chapter 131: The Pequod Meets The Delight.",
+        "lineStart": 20558,
+        "lineEnd": 20610
+      },
+      {
+        "id": "ch147",
+        "title": "Chapter 132: The Symphony.",
+        "lineStart": 20612,
+        "lineEnd": 20769
+      },
+      {
+        "id": "ch148",
+        "title": "Chapter 133: The Chase—First Day.",
+        "lineStart": 20771,
+        "lineEnd": 21138
+      },
+      {
+        "id": "ch149",
+        "title": "Chapter 134: The Chase—Second Day.",
+        "lineStart": 21140,
+        "lineEnd": 21476
+      },
+      {
+        "id": "ch150",
+        "title": "Chapter 135: The Chase.—Third Day.",
+        "lineStart": 21478,
+        "lineEnd": 21963
       }
     ]
   },
   {
-    "id": "aesops-fables",
-    "title": "Aesop's Fables",
-    "author": "Aesop",
+    "id": "pride-and-prejudice",
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "filename": "Pride and Prejudice.txt",
+    "chapterCount": 61,
     "chapters": [
       {
-        "id": "selected-fables",
-        "title": "Five Short Fables",
-        "paragraphs": [
-          "The Fox and the Grapes: On a hot afternoon a Fox came upon a vine heavy with ripe grapes. He leaped again and again, but the fruit still hung just beyond his reach. At last he walked away with a shrug and said that the grapes were probably sour anyway.",
-          "The Crow and the Pitcher: A thirsty Crow found a pitcher with a little water at the bottom. She could not reach it with her beak, so she dropped pebbles into the pitcher one by one until the water rose high enough for her to drink. What force could not do, patience accomplished.",
-          "The Hare and the Tortoise: A Hare laughed at a Tortoise for moving so slowly. The Tortoise challenged him to a race, and the Hare accepted with great confidence. Certain of victory, the Hare lay down for a nap, while the Tortoise kept moving and crossed the finish line first.",
-          "The Lion and the Mouse: A Lion once spared a Mouse who begged for mercy and promised to repay the kindness someday. Later the Lion was trapped in a hunter's net and could not free himself. The Mouse heard his roars, gnawed through the ropes, and proved that even the smallest friend can be a great help.",
-          "The Dog and the Shadow: A Dog carrying a piece of meat saw his own reflection in a stream and mistook it for another dog with a larger prize. He snapped at the shadow, and the meat in his mouth fell into the water and was lost. In reaching for more, he lost what he had."
-        ]
+        "id": "ch1",
+        "title": "Chapter I",
+        "lineStart": 701,
+        "lineEnd": 836
+      },
+      {
+        "id": "ch2",
+        "title": "Chapter II",
+        "lineStart": 838,
+        "lineEnd": 957
+      },
+      {
+        "id": "ch3",
+        "title": "Chapter III",
+        "lineStart": 959,
+        "lineEnd": 1148
+      },
+      {
+        "id": "ch4",
+        "title": "Chapter IV",
+        "lineStart": 1150,
+        "lineEnd": 1270
+      },
+      {
+        "id": "ch5",
+        "title": "Chapter V",
+        "lineStart": 1272,
+        "lineEnd": 1397
+      },
+      {
+        "id": "ch6",
+        "title": "Chapter VI",
+        "lineStart": 1399,
+        "lineEnd": 1680
+      },
+      {
+        "id": "ch7",
+        "title": "Chapter VII",
+        "lineStart": 1682,
+        "lineEnd": 1936
+      },
+      {
+        "id": "ch8",
+        "title": "Chapter VIII",
+        "lineStart": 1938,
+        "lineEnd": 2196
+      },
+      {
+        "id": "ch9",
+        "title": "Chapter IX",
+        "lineStart": 2198,
+        "lineEnd": 2398
+      },
+      {
+        "id": "ch10",
+        "title": "Chapter X",
+        "lineStart": 2400,
+        "lineEnd": 2695
+      },
+      {
+        "id": "ch11",
+        "title": "Chapter XI",
+        "lineStart": 2697,
+        "lineEnd": 2889
+      },
+      {
+        "id": "ch12",
+        "title": "Chapter XII",
+        "lineStart": 2891,
+        "lineEnd": 2967
+      },
+      {
+        "id": "ch13",
+        "title": "Chapter XIII",
+        "lineStart": 2969,
+        "lineEnd": 3159
+      },
+      {
+        "id": "ch14",
+        "title": "Chapter XIV",
+        "lineStart": 3161,
+        "lineEnd": 3295
+      },
+      {
+        "id": "ch15",
+        "title": "Chapter XV",
+        "lineStart": 3297,
+        "lineEnd": 3467
+      },
+      {
+        "id": "ch16",
+        "title": "Chapter XVI",
+        "lineStart": 3469,
+        "lineEnd": 3849
+      },
+      {
+        "id": "ch17",
+        "title": "Chapter XVII",
+        "lineStart": 3851,
+        "lineEnd": 3989
+      },
+      {
+        "id": "ch18",
+        "title": "Chapter XVIII",
+        "lineStart": 3991,
+        "lineEnd": 4540
+      },
+      {
+        "id": "ch19",
+        "title": "Chapter XIX",
+        "lineStart": 4542,
+        "lineEnd": 4739
+      },
+      {
+        "id": "ch20",
+        "title": "Chapter XX",
+        "lineStart": 4741,
+        "lineEnd": 4936
+      },
+      {
+        "id": "ch21",
+        "title": "Chapter XXI",
+        "lineStart": 4938,
+        "lineEnd": 5155
+      },
+      {
+        "id": "ch22",
+        "title": "Chapter XXII",
+        "lineStart": 5157,
+        "lineEnd": 5349
+      },
+      {
+        "id": "ch23",
+        "title": "Chapter XXIII",
+        "lineStart": 5351,
+        "lineEnd": 5536
+      },
+      {
+        "id": "ch24",
+        "title": "Chapter XXIV",
+        "lineStart": 5538,
+        "lineEnd": 5748
+      },
+      {
+        "id": "ch25",
+        "title": "Chapter XXV",
+        "lineStart": 5750,
+        "lineEnd": 5925
+      },
+      {
+        "id": "ch26",
+        "title": "Chapter XXVI",
+        "lineStart": 5927,
+        "lineEnd": 6169
+      },
+      {
+        "id": "ch27",
+        "title": "Chapter XXVII",
+        "lineStart": 6171,
+        "lineEnd": 6321
+      },
+      {
+        "id": "ch28",
+        "title": "Chapter XXVIII",
+        "lineStart": 6323,
+        "lineEnd": 6491
+      },
+      {
+        "id": "ch29",
+        "title": "Chapter XXIX",
+        "lineStart": 6493,
+        "lineEnd": 6764
+      },
+      {
+        "id": "ch30",
+        "title": "Chapter XXX",
+        "lineStart": 6766,
+        "lineEnd": 6910
+      },
+      {
+        "id": "ch31",
+        "title": "Chapter XXXI",
+        "lineStart": 6912,
+        "lineEnd": 7089
+      },
+      {
+        "id": "ch32",
+        "title": "Chapter XXXII",
+        "lineStart": 7091,
+        "lineEnd": 7272
+      },
+      {
+        "id": "ch33",
+        "title": "Chapter XXXIII",
+        "lineStart": 7274,
+        "lineEnd": 7493
+      },
+      {
+        "id": "ch34",
+        "title": "Chapter XXXIV",
+        "lineStart": 7495,
+        "lineEnd": 7725
+      },
+      {
+        "id": "ch35",
+        "title": "Chapter XXXV",
+        "lineStart": 7727,
+        "lineEnd": 7990
+      },
+      {
+        "id": "ch36",
+        "title": "Chapter XXXVI",
+        "lineStart": 7992,
+        "lineEnd": 8201
+      },
+      {
+        "id": "ch37",
+        "title": "Chapter XXXVII",
+        "lineStart": 8203,
+        "lineEnd": 8365
+      },
+      {
+        "id": "ch38",
+        "title": "Chapter XXXVIII",
+        "lineStart": 8367,
+        "lineEnd": 8495
+      },
+      {
+        "id": "ch39",
+        "title": "Chapter XXXIX",
+        "lineStart": 8497,
+        "lineEnd": 8668
+      },
+      {
+        "id": "ch40",
+        "title": "Chapter XL",
+        "lineStart": 8670,
+        "lineEnd": 8872
+      },
+      {
+        "id": "ch41",
+        "title": "Chapter XLI",
+        "lineStart": 8874,
+        "lineEnd": 9137
+      },
+      {
+        "id": "ch42",
+        "title": "Chapter XLII",
+        "lineStart": 9139,
+        "lineEnd": 9331
+      },
+      {
+        "id": "ch43",
+        "title": "Chapter XLIII",
+        "lineStart": 9333,
+        "lineEnd": 9849
+      },
+      {
+        "id": "ch44",
+        "title": "Chapter XLIV",
+        "lineStart": 9851,
+        "lineEnd": 10086
+      },
+      {
+        "id": "ch45",
+        "title": "Chapter XLV",
+        "lineStart": 10088,
+        "lineEnd": 10271
+      },
+      {
+        "id": "ch46",
+        "title": "Chapter XLVI",
+        "lineStart": 10273,
+        "lineEnd": 10579
+      },
+      {
+        "id": "ch47",
+        "title": "Chapter XLVII",
+        "lineStart": 10581,
+        "lineEnd": 11020
+      },
+      {
+        "id": "ch48",
+        "title": "Chapter XLVIII",
+        "lineStart": 11022,
+        "lineEnd": 11271
+      },
+      {
+        "id": "ch49",
+        "title": "Chapter XLIX",
+        "lineStart": 11273,
+        "lineEnd": 11547
+      },
+      {
+        "id": "ch50",
+        "title": "Chapter L",
+        "lineStart": 11549,
+        "lineEnd": 11779
+      },
+      {
+        "id": "ch51",
+        "title": "Chapter LI",
+        "lineStart": 11781,
+        "lineEnd": 12015
+      },
+      {
+        "id": "ch52",
+        "title": "Chapter LII",
+        "lineStart": 12017,
+        "lineEnd": 12337
+      },
+      {
+        "id": "ch53",
+        "title": "Chapter LIII",
+        "lineStart": 12339,
+        "lineEnd": 12667
+      },
+      {
+        "id": "ch54",
+        "title": "Chapter LIV",
+        "lineStart": 12669,
+        "lineEnd": 12867
+      },
+      {
+        "id": "ch55",
+        "title": "Chapter LV",
+        "lineStart": 12869,
+        "lineEnd": 13147
+      },
+      {
+        "id": "ch56",
+        "title": "Chapter LVI",
+        "lineStart": 13149,
+        "lineEnd": 13496
+      },
+      {
+        "id": "ch57",
+        "title": "Chapter LVII",
+        "lineStart": 13498,
+        "lineEnd": 13677
+      },
+      {
+        "id": "ch58",
+        "title": "Chapter LVIII",
+        "lineStart": 13679,
+        "lineEnd": 13957
+      },
+      {
+        "id": "ch59",
+        "title": "Chapter LIX",
+        "lineStart": 13959,
+        "lineEnd": 14240
+      },
+      {
+        "id": "ch60",
+        "title": "Chapter LX",
+        "lineStart": 14242,
+        "lineEnd": 14421
+      },
+      {
+        "id": "ch61",
+        "title": "Chapter LXI",
+        "lineStart": 14423,
+        "lineEnd": 14564
+      }
+    ]
+  },
+  {
+    "id": "report-of-the-president-s-commission-on-",
+    "title": "Report of the President's Commission on the Assassination of President John F. Kennedy",
+    "author": "United States. Warren Commission",
+    "filename": "Report of the President's Commission on the Assassination of President John F. Kennedy.txt",
+    "chapterCount": 30,
+    "chapters": [
+      {
+        "id": "ch1",
+        "title": "Chapter I: SUMMARY AND CONCLUSIONS",
+        "lineStart": 579,
+        "lineEnd": 582
+      },
+      {
+        "id": "ch2",
+        "title": "Chapter II: THE ASSASSINATION",
+        "lineStart": 584,
+        "lineEnd": 610
+      },
+      {
+        "id": "ch3",
+        "title": "Chapter III: THE SHOTS FROM THE TEXAS SCHOOL BOOK DEPOSITORY",
+        "lineStart": 612,
+        "lineEnd": 638
+      },
+      {
+        "id": "ch4",
+        "title": "Chapter IV: THE ASSASSIN",
+        "lineStart": 640,
+        "lineEnd": 686
+      },
+      {
+        "id": "ch5",
+        "title": "Chapter V: DETENTION AND DEATH OF OSWALD",
+        "lineStart": 688,
+        "lineEnd": 700
+      },
+      {
+        "id": "ch6",
+        "title": "Chapter VI: INVESTIGATION OF POSSIBLE CONSPIRACY",
+        "lineStart": 702,
+        "lineEnd": 722
+      },
+      {
+        "id": "ch7",
+        "title": "Chapter VII: LEE HARVEY OSWALD: BACKGROUND AND POSSIBLE MOTIVES",
+        "lineStart": 724,
+        "lineEnd": 739
+      },
+      {
+        "id": "ch8",
+        "title": "Chapter VIII: THE PROTECTION OF THE PRESIDENT",
+        "lineStart": 741,
+        "lineEnd": 924
+      },
+      {
+        "id": "ch9",
+        "title": "Chapter I",
+        "lineStart": 926,
+        "lineEnd": 2312
+      },
+      {
+        "id": "ch10",
+        "title": "Chapter II",
+        "lineStart": 2314,
+        "lineEnd": 3668
+      },
+      {
+        "id": "ch11",
+        "title": "Chapter III",
+        "lineStart": 3670,
+        "lineEnd": 5728
+      },
+      {
+        "id": "ch12",
+        "title": "Chapter IV",
+        "lineStart": 5730,
+        "lineEnd": 6990
+      },
+      {
+        "id": "ch13",
+        "title": "Chapter III: [C4-305] Euins, who was on the southwest corner of Elm and",
+        "lineStart": 6992,
+        "lineEnd": 8396
+      },
+      {
+        "id": "ch14",
+        "title": "Chapter V: of this report.",
+        "lineStart": 8398,
+        "lineEnd": 9228
+      },
+      {
+        "id": "ch15",
+        "title": "Chapter V",
+        "lineStart": 9230,
+        "lineEnd": 10025
+      },
+      {
+        "id": "ch16",
+        "title": "Chapter VI: , the Commission has considered whether there is any evidence",
+        "lineStart": 10027,
+        "lineEnd": 11138
+      },
+      {
+        "id": "ch17",
+        "title": "Chapter VI",
+        "lineStart": 11140,
+        "lineEnd": 13034
+      },
+      {
+        "id": "ch18",
+        "title": "Chapter VIII: She did not then know Oswald’s address in Dallas.[C6-367",
+        "lineStart": 13036,
+        "lineEnd": 17248
+      },
+      {
+        "id": "ch19",
+        "title": "Chapter VII",
+        "lineStart": 17250,
+        "lineEnd": 19736
+      },
+      {
+        "id": "ch20",
+        "title": "Chapter VIII",
+        "lineStart": 19738,
+        "lineEnd": 20769
+      },
+      {
+        "id": "ch21",
+        "title": "Chapter II: , some limited information was made available to the Secret",
+        "lineStart": 20771,
+        "lineEnd": 20789
+      },
+      {
+        "id": "ch22",
+        "title": "Chapter II: With the assistance of Agent in Charge Sorrels of the",
+        "lineStart": 20791,
+        "lineEnd": 39936
+      },
+      {
+        "id": "ch23",
+        "title": "Chapter II",
+        "lineStart": 39938,
+        "lineEnd": 40536
+      },
+      {
+        "id": "ch24",
+        "title": "Chapter III",
+        "lineStart": 40538,
+        "lineEnd": 41304
+      },
+      {
+        "id": "ch25",
+        "title": "Chapter IV",
+        "lineStart": 41306,
+        "lineEnd": 43023
+      },
+      {
+        "id": "ch26",
+        "title": "Chapter V",
+        "lineStart": 43025,
+        "lineEnd": 43681
+      },
+      {
+        "id": "ch27",
+        "title": "Chapter VI",
+        "lineStart": 43683,
+        "lineEnd": 46688
+      },
+      {
+        "id": "ch28",
+        "title": "Chapter VII",
+        "lineStart": 46690,
+        "lineEnd": 47712
+      },
+      {
+        "id": "ch29",
+        "title": "Chapter VIII",
+        "lineStart": 47714,
+        "lineEnd": 56039
+      },
+      {
+        "id": "ch30",
+        "title": "Part V",
+        "lineStart": 56041,
+        "lineEnd": 56254
+      }
+    ]
+  },
+  {
+    "id": "romeo-and-juliet",
+    "title": "Romeo and Juliet",
+    "author": "William Shakespeare",
+    "filename": "Romeo and Juliet.txt",
+    "chapterCount": 10,
+    "chapters": [
+      {
+        "id": "ch1",
+        "title": "Act I",
+        "lineStart": 43,
+        "lineEnd": 48
+      },
+      {
+        "id": "ch2",
+        "title": "Act II",
+        "lineStart": 50,
+        "lineEnd": 57
+      },
+      {
+        "id": "ch3",
+        "title": "Act III",
+        "lineStart": 59,
+        "lineEnd": 64
+      },
+      {
+        "id": "ch4",
+        "title": "Act IV",
+        "lineStart": 66,
+        "lineEnd": 71
+      },
+      {
+        "id": "ch5",
+        "title": "Act V",
+        "lineStart": 73,
+        "lineEnd": 145
+      },
+      {
+        "id": "ch6",
+        "title": "Act I",
+        "lineStart": 147,
+        "lineEnd": 1423
+      },
+      {
+        "id": "ch7",
+        "title": "Act II",
+        "lineStart": 1425,
+        "lineEnd": 2563
+      },
+      {
+        "id": "ch8",
+        "title": "Act III",
+        "lineStart": 2565,
+        "lineEnd": 3865
+      },
+      {
+        "id": "ch9",
+        "title": "Act IV",
+        "lineStart": 3867,
+        "lineEnd": 4585
+      },
+      {
+        "id": "ch10",
+        "title": "Act V",
+        "lineStart": 4587,
+        "lineEnd": 5300
+      }
+    ]
+  },
+  {
+    "id": "the-city-of-god-volume-i",
+    "title": "The City of God, Volume I",
+    "author": "Saint of Hippo Augustine",
+    "filename": "The City of God, Volume I.txt",
+    "chapterCount": 10,
+    "chapters": [
+      {
+        "id": "ch1",
+        "title": "Book I",
+        "lineStart": 105,
+        "lineEnd": 113
+      },
+      {
+        "id": "ch2",
+        "title": "Book II",
+        "lineStart": 115,
+        "lineEnd": 120
+      },
+      {
+        "id": "ch3",
+        "title": "Book III",
+        "lineStart": 122,
+        "lineEnd": 125
+      },
+      {
+        "id": "ch4",
+        "title": "Book IV",
+        "lineStart": 127,
+        "lineEnd": 131
+      },
+      {
+        "id": "ch5",
+        "title": "Book V",
+        "lineStart": 133,
+        "lineEnd": 137
+      },
+      {
+        "id": "ch6",
+        "title": "Book VI",
+        "lineStart": 139,
+        "lineEnd": 144
+      },
+      {
+        "id": "ch7",
+        "title": "Book VII",
+        "lineStart": 146,
+        "lineEnd": 150
+      },
+      {
+        "id": "ch8",
+        "title": "Book VIII",
+        "lineStart": 152,
+        "lineEnd": 175
+      },
+      {
+        "id": "ch9",
+        "title": "Book XII",
+        "lineStart": 177,
+        "lineEnd": 180
+      },
+      {
+        "id": "ch10",
+        "title": "Book XIII",
+        "lineStart": 182,
+        "lineEnd": 22401
+      }
+    ]
+  },
+  {
+    "id": "the-great-gatsby",
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "filename": "The Great Gatsby.txt",
+    "chapterCount": 9,
+    "chapters": [
+      {
+        "id": "ch1",
+        "title": "Part I",
+        "lineStart": 63,
+        "lineEnd": 778
+      },
+      {
+        "id": "ch2",
+        "title": "Part II",
+        "lineStart": 780,
+        "lineEnd": 1325
+      },
+      {
+        "id": "ch3",
+        "title": "Part III",
+        "lineStart": 1327,
+        "lineEnd": 2055
+      },
+      {
+        "id": "ch4",
+        "title": "Part IV",
+        "lineStart": 2057,
+        "lineEnd": 2760
+      },
+      {
+        "id": "ch5",
+        "title": "Part V",
+        "lineStart": 2762,
+        "lineEnd": 3333
+      },
+      {
+        "id": "ch6",
+        "title": "Part VI",
+        "lineStart": 3335,
+        "lineEnd": 3870
+      },
+      {
+        "id": "ch7",
+        "title": "Part VII",
+        "lineStart": 3872,
+        "lineEnd": 5211
+      },
+      {
+        "id": "ch8",
+        "title": "Part VIII",
+        "lineStart": 5213,
+        "lineEnd": 5762
+      },
+      {
+        "id": "ch9",
+        "title": "Part IX",
+        "lineStart": 5764,
+        "lineEnd": 6434
+      }
+    ]
+  },
+  {
+    "id": "the-king-in-yellow",
+    "title": "The King in Yellow",
+    "author": "Robert W. Chambers",
+    "filename": "The King in Yellow.txt",
+    "chapterCount": 28,
+    "chapters": [
+      {
+        "id": "ch1",
+        "title": "Part I",
+        "lineStart": 105,
+        "lineEnd": 438
+      },
+      {
+        "id": "ch2",
+        "title": "Part II",
+        "lineStart": 440,
+        "lineEnd": 940
+      },
+      {
+        "id": "ch3",
+        "title": "Part III",
+        "lineStart": 942,
+        "lineEnd": 1491
+      },
+      {
+        "id": "ch4",
+        "title": "Part I",
+        "lineStart": 1493,
+        "lineEnd": 1679
+      },
+      {
+        "id": "ch5",
+        "title": "Part II",
+        "lineStart": 1681,
+        "lineEnd": 1806
+      },
+      {
+        "id": "ch6",
+        "title": "Part III",
+        "lineStart": 1808,
+        "lineEnd": 2045
+      },
+      {
+        "id": "ch7",
+        "title": "Part IV",
+        "lineStart": 2047,
+        "lineEnd": 2532
+      },
+      {
+        "id": "ch8",
+        "title": "Part I",
+        "lineStart": 2534,
+        "lineEnd": 2767
+      },
+      {
+        "id": "ch9",
+        "title": "Part II",
+        "lineStart": 2769,
+        "lineEnd": 3209
+      },
+      {
+        "id": "ch10",
+        "title": "Part III",
+        "lineStart": 3211,
+        "lineEnd": 3369
+      },
+      {
+        "id": "ch11",
+        "title": "Part I",
+        "lineStart": 3371,
+        "lineEnd": 3638
+      },
+      {
+        "id": "ch12",
+        "title": "Part II",
+        "lineStart": 3640,
+        "lineEnd": 4221
+      },
+      {
+        "id": "ch13",
+        "title": "Part I",
+        "lineStart": 4223,
+        "lineEnd": 4343
+      },
+      {
+        "id": "ch14",
+        "title": "Part II",
+        "lineStart": 4345,
+        "lineEnd": 4823
+      },
+      {
+        "id": "ch15",
+        "title": "Part II",
+        "lineStart": 4825,
+        "lineEnd": 5461
+      },
+      {
+        "id": "ch16",
+        "title": "Part III",
+        "lineStart": 5463,
+        "lineEnd": 5802
+      },
+      {
+        "id": "ch17",
+        "title": "Part IV",
+        "lineStart": 5804,
+        "lineEnd": 6031
+      },
+      {
+        "id": "ch18",
+        "title": "Part I",
+        "lineStart": 6033,
+        "lineEnd": 6151
+      },
+      {
+        "id": "ch19",
+        "title": "Part II",
+        "lineStart": 6153,
+        "lineEnd": 6301
+      },
+      {
+        "id": "ch20",
+        "title": "Part III",
+        "lineStart": 6303,
+        "lineEnd": 6698
+      },
+      {
+        "id": "ch21",
+        "title": "Part IV",
+        "lineStart": 6700,
+        "lineEnd": 7353
+      },
+      {
+        "id": "ch22",
+        "title": "Part V",
+        "lineStart": 7355,
+        "lineEnd": 7525
+      },
+      {
+        "id": "ch23",
+        "title": "Part VI",
+        "lineStart": 7527,
+        "lineEnd": 7880
+      },
+      {
+        "id": "ch24",
+        "title": "Part I",
+        "lineStart": 7882,
+        "lineEnd": 8071
+      },
+      {
+        "id": "ch25",
+        "title": "Part II",
+        "lineStart": 8073,
+        "lineEnd": 8222
+      },
+      {
+        "id": "ch26",
+        "title": "Part III",
+        "lineStart": 8224,
+        "lineEnd": 8360
+      },
+      {
+        "id": "ch27",
+        "title": "Part IV",
+        "lineStart": 8362,
+        "lineEnd": 8619
+      },
+      {
+        "id": "ch28",
+        "title": "Part V",
+        "lineStart": 8621,
+        "lineEnd": 8827
+      }
+    ]
+  },
+  {
+    "id": "the-origin-and-development-of-the-moral-",
+    "title": "The origin and development of the moral ideas",
+    "author": "Edward Westermarck",
+    "filename": "The origin and development of the moral ideas.txt",
+    "chapterCount": 97,
+    "chapters": [
+      {
+        "id": "ch1",
+        "title": "Chapter I",
+        "lineStart": 180,
+        "lineEnd": 201
+      },
+      {
+        "id": "ch2",
+        "title": "Chapter II",
+        "lineStart": 203,
+        "lineEnd": 245
+      },
+      {
+        "id": "ch3",
+        "title": "Chapter III",
+        "lineStart": 247,
+        "lineEnd": 300
+      },
+      {
+        "id": "ch4",
+        "title": "Chapter V",
+        "lineStart": 302,
+        "lineEnd": 345
+      },
+      {
+        "id": "ch5",
+        "title": "Chapter VI",
+        "lineStart": 347,
+        "lineEnd": 363
+      },
+      {
+        "id": "ch6",
+        "title": "Chapter VII",
+        "lineStart": 365,
+        "lineEnd": 417
+      },
+      {
+        "id": "ch7",
+        "title": "Chapter VIII",
+        "lineStart": 419,
+        "lineEnd": 455
+      },
+      {
+        "id": "ch8",
+        "title": "Chapter IX",
+        "lineStart": 457,
+        "lineEnd": 489
+      },
+      {
+        "id": "ch9",
+        "title": "Chapter X",
+        "lineStart": 491,
+        "lineEnd": 520
+      },
+      {
+        "id": "ch10",
+        "title": "Chapter XI",
+        "lineStart": 522,
+        "lineEnd": 577
+      },
+      {
+        "id": "ch11",
+        "title": "Chapter XIII",
+        "lineStart": 579,
+        "lineEnd": 641
+      },
+      {
+        "id": "ch12",
+        "title": "Chapter XV",
+        "lineStart": 643,
+        "lineEnd": 699
+      },
+      {
+        "id": "ch13",
+        "title": "Chapter XVII",
+        "lineStart": 701,
+        "lineEnd": 728
+      },
+      {
+        "id": "ch14",
+        "title": "Chapter XVIII",
+        "lineStart": 730,
+        "lineEnd": 768
+      },
+      {
+        "id": "ch15",
+        "title": "Chapter XIX",
+        "lineStart": 770,
+        "lineEnd": 821
+      },
+      {
+        "id": "ch16",
+        "title": "Chapter XX",
+        "lineStart": 823,
+        "lineEnd": 858
+      },
+      {
+        "id": "ch17",
+        "title": "Chapter XXI",
+        "lineStart": 860,
+        "lineEnd": 877
+      },
+      {
+        "id": "ch18",
+        "title": "Chapter XXII",
+        "lineStart": 879,
+        "lineEnd": 911
+      },
+      {
+        "id": "ch19",
+        "title": "Chapter XXIII",
+        "lineStart": 913,
+        "lineEnd": 951
+      },
+      {
+        "id": "ch20",
+        "title": "Chapter XXIV",
+        "lineStart": 953,
+        "lineEnd": 977
+      },
+      {
+        "id": "ch21",
+        "title": "Chapter XXV",
+        "lineStart": 979,
+        "lineEnd": 1016
+      },
+      {
+        "id": "ch22",
+        "title": "Chapter XXVI",
+        "lineStart": 1018,
+        "lineEnd": 1080
+      },
+      {
+        "id": "ch23",
+        "title": "Chapter XXVII",
+        "lineStart": 1082,
+        "lineEnd": 1194
+      },
+      {
+        "id": "ch24",
+        "title": "Chapter I",
+        "lineStart": 1196,
+        "lineEnd": 1776
+      },
+      {
+        "id": "ch25",
+        "title": "Chapter II",
+        "lineStart": 1778,
+        "lineEnd": 4161
+      },
+      {
+        "id": "ch26",
+        "title": "Chapter III",
+        "lineStart": 4163,
+        "lineEnd": 5309
+      },
+      {
+        "id": "ch27",
+        "title": "Chapter IV",
+        "lineStart": 5311,
+        "lineEnd": 5592
+      },
+      {
+        "id": "ch28",
+        "title": "Chapter V",
+        "lineStart": 5594,
+        "lineEnd": 6471
+      },
+      {
+        "id": "ch29",
+        "title": "Chapter VI",
+        "lineStart": 6473,
+        "lineEnd": 7437
+      },
+      {
+        "id": "ch30",
+        "title": "Chapter VII",
+        "lineStart": 7439,
+        "lineEnd": 9406
+      },
+      {
+        "id": "ch31",
+        "title": "Chapter VIII",
+        "lineStart": 9408,
+        "lineEnd": 9964
+      },
+      {
+        "id": "ch32",
+        "title": "Chapter IX",
+        "lineStart": 9966,
+        "lineEnd": 11420
+      },
+      {
+        "id": "ch33",
+        "title": "Chapter X",
+        "lineStart": 11422,
+        "lineEnd": 12974
+      },
+      {
+        "id": "ch34",
+        "title": "Chapter XI",
+        "lineStart": 12976,
+        "lineEnd": 13896
+      },
+      {
+        "id": "ch35",
+        "title": "Chapter XII",
+        "lineStart": 13898,
+        "lineEnd": 14323
+      },
+      {
+        "id": "ch36",
+        "title": "Chapter XIII",
+        "lineStart": 14325,
+        "lineEnd": 14815
+      },
+      {
+        "id": "ch37",
+        "title": "Chapter XIV",
+        "lineStart": 14817,
+        "lineEnd": 15652
+      },
+      {
+        "id": "ch38",
+        "title": "Chapter XV",
+        "lineStart": 15654,
+        "lineEnd": 16831
+      },
+      {
+        "id": "ch39",
+        "title": "Chapter XVI",
+        "lineStart": 16833,
+        "lineEnd": 17313
+      },
+      {
+        "id": "ch40",
+        "title": "Chapter XVII",
+        "lineStart": 17315,
+        "lineEnd": 19023
+      },
+      {
+        "id": "ch41",
+        "title": "Chapter XVIII",
+        "lineStart": 19025,
+        "lineEnd": 19768
+      },
+      {
+        "id": "ch42",
+        "title": "Chapter XIX",
+        "lineStart": 19770,
+        "lineEnd": 21948
+      },
+      {
+        "id": "ch43",
+        "title": "Chapter XX",
+        "lineStart": 21950,
+        "lineEnd": 22876
+      },
+      {
+        "id": "ch44",
+        "title": "Chapter XXI",
+        "lineStart": 22878,
+        "lineEnd": 23433
+      },
+      {
+        "id": "ch45",
+        "title": "Chapter XXII",
+        "lineStart": 23435,
+        "lineEnd": 24125
+      },
+      {
+        "id": "ch46",
+        "title": "Chapter XXIII",
+        "lineStart": 24127,
+        "lineEnd": 26260
+      },
+      {
+        "id": "ch47",
+        "title": "Chapter XXIV",
+        "lineStart": 26262,
+        "lineEnd": 27507
+      },
+      {
+        "id": "ch48",
+        "title": "Chapter XXV",
+        "lineStart": 27509,
+        "lineEnd": 29094
+      },
+      {
+        "id": "ch49",
+        "title": "Chapter XXVI",
+        "lineStart": 29096,
+        "lineEnd": 31083
+      },
+      {
+        "id": "ch50",
+        "title": "Chapter XXVII",
+        "lineStart": 31085,
+        "lineEnd": 33410
+      },
+      {
+        "id": "ch51",
+        "title": "Chapter XXVIII",
+        "lineStart": 33412,
+        "lineEnd": 33441
+      },
+      {
+        "id": "ch52",
+        "title": "Chapter XXIX",
+        "lineStart": 33443,
+        "lineEnd": 33466
+      },
+      {
+        "id": "ch53",
+        "title": "Chapter XXX",
+        "lineStart": 33468,
+        "lineEnd": 33488
+      },
+      {
+        "id": "ch54",
+        "title": "Chapter XXXI",
+        "lineStart": 33490,
+        "lineEnd": 33527
+      },
+      {
+        "id": "ch55",
+        "title": "Chapter XXXII",
+        "lineStart": 33529,
+        "lineEnd": 33551
+      },
+      {
+        "id": "ch56",
+        "title": "Chapter XXXIII",
+        "lineStart": 33553,
+        "lineEnd": 33624
+      },
+      {
+        "id": "ch57",
+        "title": "Chapter XXXV",
+        "lineStart": 33626,
+        "lineEnd": 33653
+      },
+      {
+        "id": "ch58",
+        "title": "Chapter XXXVI",
+        "lineStart": 33655,
+        "lineEnd": 33681
+      },
+      {
+        "id": "ch59",
+        "title": "Chapter XXXVII",
+        "lineStart": 33683,
+        "lineEnd": 33715
+      },
+      {
+        "id": "ch60",
+        "title": "Chapter XXXVIII",
+        "lineStart": 33717,
+        "lineEnd": 33750
+      },
+      {
+        "id": "ch61",
+        "title": "Chapter XXXIX",
+        "lineStart": 33752,
+        "lineEnd": 33806
+      },
+      {
+        "id": "ch62",
+        "title": "Chapter XLI",
+        "lineStart": 33808,
+        "lineEnd": 33827
+      },
+      {
+        "id": "ch63",
+        "title": "Chapter XLII",
+        "lineStart": 33829,
+        "lineEnd": 33855
+      },
+      {
+        "id": "ch64",
+        "title": "Chapter XLIII",
+        "lineStart": 33857,
+        "lineEnd": 33889
+      },
+      {
+        "id": "ch65",
+        "title": "Chapter XLIV",
+        "lineStart": 33891,
+        "lineEnd": 33917
+      },
+      {
+        "id": "ch66",
+        "title": "Chapter XLV",
+        "lineStart": 33919,
+        "lineEnd": 34002
+      },
+      {
+        "id": "ch67",
+        "title": "Chapter XLVII",
+        "lineStart": 34004,
+        "lineEnd": 34055
+      },
+      {
+        "id": "ch68",
+        "title": "Chapter XLIX",
+        "lineStart": 34057,
+        "lineEnd": 34076
+      },
+      {
+        "id": "ch69",
+        "title": "Chapter L",
+        "lineStart": 34078,
+        "lineEnd": 34110
+      },
+      {
+        "id": "ch70",
+        "title": "Chapter LI",
+        "lineStart": 34112,
+        "lineEnd": 34127
+      },
+      {
+        "id": "ch71",
+        "title": "Chapter LII",
+        "lineStart": 34129,
+        "lineEnd": 34191
+      },
+      {
+        "id": "ch72",
+        "title": "Chapter XXVIII",
+        "lineStart": 34193,
+        "lineEnd": 36162
+      },
+      {
+        "id": "ch73",
+        "title": "Chapter XXIX",
+        "lineStart": 36164,
+        "lineEnd": 37991
+      },
+      {
+        "id": "ch74",
+        "title": "Chapter XXX",
+        "lineStart": 37993,
+        "lineEnd": 39960
+      },
+      {
+        "id": "ch75",
+        "title": "Chapter XXXI",
+        "lineStart": 39962,
+        "lineEnd": 41319
+      },
+      {
+        "id": "ch76",
+        "title": "Chapter XXXII",
+        "lineStart": 41321,
+        "lineEnd": 42090
+      },
+      {
+        "id": "ch77",
+        "title": "Chapter XXXIII",
+        "lineStart": 42092,
+        "lineEnd": 43703
+      },
+      {
+        "id": "ch78",
+        "title": "Chapter XXXIV",
+        "lineStart": 43705,
+        "lineEnd": 45585
+      },
+      {
+        "id": "ch79",
+        "title": "Chapter XXXV",
+        "lineStart": 45587,
+        "lineEnd": 47442
+      },
+      {
+        "id": "ch80",
+        "title": "Chapter XXXVI",
+        "lineStart": 47444,
+        "lineEnd": 48657
+      },
+      {
+        "id": "ch81",
+        "title": "Chapter XXXVII",
+        "lineStart": 48659,
+        "lineEnd": 50099
+      },
+      {
+        "id": "ch82",
+        "title": "Chapter XXXVIII",
+        "lineStart": 50101,
+        "lineEnd": 51462
+      },
+      {
+        "id": "ch83",
+        "title": "Chapter XXXIX",
+        "lineStart": 51464,
+        "lineEnd": 52330
+      },
+      {
+        "id": "ch84",
+        "title": "Chapter XL",
+        "lineStart": 52332,
+        "lineEnd": 53894
+      },
+      {
+        "id": "ch85",
+        "title": "Chapter XLI",
+        "lineStart": 53896,
+        "lineEnd": 55039
+      },
+      {
+        "id": "ch86",
+        "title": "Chapter XLII",
+        "lineStart": 55041,
+        "lineEnd": 56681
+      },
+      {
+        "id": "ch87",
+        "title": "Chapter XLIII",
+        "lineStart": 56683,
+        "lineEnd": 58401
+      },
+      {
+        "id": "ch88",
+        "title": "Chapter XLIV",
+        "lineStart": 58403,
+        "lineEnd": 59557
+      },
+      {
+        "id": "ch89",
+        "title": "Chapter XLV",
+        "lineStart": 59559,
+        "lineEnd": 61488
+      },
+      {
+        "id": "ch90",
+        "title": "Chapter XLVI",
+        "lineStart": 61490,
+        "lineEnd": 62838
+      },
+      {
+        "id": "ch91",
+        "title": "Chapter XLVII",
+        "lineStart": 62840,
+        "lineEnd": 63722
+      },
+      {
+        "id": "ch92",
+        "title": "Chapter XLVIII",
+        "lineStart": 63724,
+        "lineEnd": 65499
+      },
+      {
+        "id": "ch93",
+        "title": "Chapter XLIX",
+        "lineStart": 65501,
+        "lineEnd": 66604
+      },
+      {
+        "id": "ch94",
+        "title": "Chapter L",
+        "lineStart": 66606,
+        "lineEnd": 68404
+      },
+      {
+        "id": "ch95",
+        "title": "Chapter LI",
+        "lineStart": 68406,
+        "lineEnd": 70008
+      },
+      {
+        "id": "ch96",
+        "title": "Chapter LII",
+        "lineStart": 70010,
+        "lineEnd": 70426
+      },
+      {
+        "id": "ch97",
+        "title": "Chapter LIII",
+        "lineStart": 70428,
+        "lineEnd": 82207
       }
     ]
   }

@@ -1,13 +1,16 @@
 export interface Chapter {
   id: string;
   title: string;
-  paragraphs: string[];
+  lineStart: number;
+  lineEnd: number;
 }
 
 export interface Book {
   id: string;
   title: string;
   author: string;
+  filename: string;
+  chapterCount: number;
   chapters: Chapter[];
 }
 

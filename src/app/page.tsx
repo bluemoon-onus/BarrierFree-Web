@@ -1,500 +1,321 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import BookReader from '@/components/BookReader';
-import MouseZoneOverlay from '@/components/MouseZoneOverlay';
-import NavigationBar from '@/components/NavigationBar';
-import Onboarding from '@/components/Onboarding';
-import TypingEditor from '@/components/TypingEditor';
+import { BookReader } from '@/components/BookReader';
+import { SettingsButton } from '@/components/SettingsButton';
 import { type Book, loadBooks } from '@/lib/books';
-import { type Zone, useMouseZone } from '@/hooks/useMouseZone';
 import { useTTS } from '@/hooks/useTTS';
 import voiceDictionary from '@/lib/voiceDictionary';
 
-type ViewState = 'DEFAULT' | 'BOOKS' | 'READING' | 'SEARCH';
-type BookLoadState = 'loading' | 'ready' | 'error';
-
-type ZoneCard = {
-  title: string;
-  subtitle: string;
-  positionClassName: string;
-  alignClassName: string;
-  ariaLabel: string;
-};
-
-const ZONE_CARDS: Record<Zone, ZoneCard> = {
-  back: {
-    title: 'Back',
-    subtitle: 'Return to the previous view',
-    positionClassName: 'left-0 top-0 h-1/2 w-1/2',
-    alignClassName: 'items-start justify-start text-left',
-    ariaLabel: 'Back zone. Activate to go to the previous view.',
-  },
-  forward: {
-    title: 'Forward',
-    subtitle: 'Move to the next view',
-    positionClassName: 'right-0 top-0 h-1/2 w-1/2',
-    alignClassName: 'items-end justify-start text-right',
-    ariaLabel: 'Forward zone. Activate to go to the next view.',
-  },
-  books: {
-    title: 'Books',
-    subtitle: 'Browse the library',
-    positionClassName: 'left-0 top-1/2 h-1/2 w-[35%]',
-    alignClassName: 'items-start justify-end text-left',
-    ariaLabel: 'Books zone. Activate to browse books.',
-  },
-  search: {
-    title: 'Search',
-    subtitle: 'Open the typing editor',
-    positionClassName: 'right-0 top-1/2 h-1/2 w-[35%]',
-    alignClassName: 'items-end justify-end text-right',
-    ariaLabel: 'Search zone. Activate to open search.',
-  },
-  home: {
-    title: 'Home',
-    subtitle: 'Return to the default view',
-    positionClassName: 'left-[35%] top-[70%] h-[30%] w-[30%]',
-    alignClassName: 'items-center justify-center text-center',
-    ariaLabel: 'Home zone. Activate to return to the main view.',
-  },
-};
-
-const ZONE_HEADLINES: Record<Zone, string> = {
-  back: 'Back zone',
-  forward: 'Forward zone',
-  books: 'Books zone',
-  search: 'Search zone',
-  home: 'Home zone',
-};
-
-const ZONE_LABELS: Record<Zone, string> = {
-  back: 'Back',
-  forward: 'Forward',
-  books: 'Books',
-  search: 'Search',
-  home: 'Home',
-};
-
-function getGuidanceText(
-  nearbyZones: { zone: Zone; direction: string }[],
-): string | null {
-  if (nearbyZones.length === 0) {
-    return null;
-  }
-
-  return nearbyZones
-    .map(({ zone, direction }) =>
-      voiceDictionary.navigation.direction(ZONE_LABELS[zone], direction),
-    )
-    .join(' ');
-}
+type AppState = 'WELCOME' | 'LIBRARY' | 'READING';
 
 export default function HomePage() {
-  const { currentZone, isIdle, mousePosition, nearbyZones } = useMouseZone();
   const { speak } = useTTS();
 
-  const mainRef = useRef<HTMLElement | null>(null);
-  const [viewState, setViewState] = useState<ViewState>('DEFAULT');
-  const [showDebugOverlay, setShowDebugOverlay] = useState(true);
+  const [appState, setAppState] = useState<AppState>('WELCOME');
   const [books, setBooks] = useState<Book[]>([]);
-  const [bookLoadState, setBookLoadState] = useState<BookLoadState>('loading');
+  const [booksLoaded, setBooksLoaded] = useState(false);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
-  const [lastSearchQuery, setLastSearchQuery] = useState<string | null>(null);
-  const [onboardingReplayTrigger, setOnboardingReplayTrigger] = useState(0);
-  const [isOnboardingVisible, setIsOnboardingVisible] = useState(false);
+  const [selectedChapterId, setSelectedChapterId] = useState<string>('');
+  const [focusedLibraryIndex, setFocusedLibraryIndex] = useState(0);
 
-  const lastEnteredZoneRef = useRef<Zone | null>(null);
-  const lastIdleZoneRef = useRef<Zone | null>(null);
+  const getStartedRef = useRef<HTMLButtonElement | null>(null);
+  const libraryListRef = useRef<HTMLOListElement | null>(null);
+  const hasAnnouncedWelcomeRef = useRef(false);
+  const hasAnnouncedLibraryRef = useRef(false);
+  const speakRef = useRef(speak);
 
-  const hasPointerMoved = mousePosition.x > 0 || mousePosition.y > 0;
-  const isZoneSpeechEnabled = viewState === 'DEFAULT' && !isOnboardingVisible;
-  const nearbyGuidanceText = getGuidanceText(nearbyZones);
-  const currentViewLabel =
-    viewState === 'BOOKS'
-      ? 'Books'
-      : viewState === 'READING'
-      ? selectedBook?.title ?? 'Reading'
-      : viewState === 'SEARCH'
-      ? 'Search'
-      : 'Home';
+  speakRef.current = speak;
 
+  // Load books on mount
   useEffect(() => {
-    let cancelled = false;
-
-    setBookLoadState('loading');
-
     void loadBooks()
-      .then((loadedBooks) => {
-        if (cancelled) {
-          return;
-        }
-
-        setBooks(loadedBooks);
-        setBookLoadState('ready');
+      .then((loaded) => {
+        setBooks(loaded);
+        setBooksLoaded(true);
       })
       .catch(() => {
-        if (cancelled) {
-          return;
-        }
-
-        setBookLoadState('error');
+        setBooksLoaded(true);
       });
-
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
+  // WELCOME: speak greeting once on mount
   useEffect(() => {
+    if (appState !== 'WELCOME' || hasAnnouncedWelcomeRef.current) return;
+    hasAnnouncedWelcomeRef.current = true;
+    void speakRef.current(voiceDictionary.welcome.greeting, { priority: 'high' });
+    // Focus the Get Started button after a short tick for reliable focus
+    const id = window.setTimeout(() => {
+      getStartedRef.current?.focus();
+    }, 100);
+    return () => window.clearTimeout(id);
+  }, [appState]);
+
+  // LIBRARY: speak announcement once when state becomes LIBRARY
+  useEffect(() => {
+    if (appState !== 'LIBRARY') {
+      hasAnnouncedLibraryRef.current = false;
+      return;
+    }
+    if (hasAnnouncedLibraryRef.current) return;
+    hasAnnouncedLibraryRef.current = true;
+    setFocusedLibraryIndex(0);
+    void speakRef.current(voiceDictionary.library.open(books.length), {
+      priority: 'high',
+    });
+  }, [appState, books.length]);
+
+  // WELCOME keyboard: Enter → Get Started
+  useEffect(() => {
+    if (appState !== 'WELCOME') return;
+
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey || event.metaKey || event.altKey) {
-        return;
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        openLibrary();
       }
-
-      if (viewState === 'SEARCH' || viewState === 'READING') {
-        return;
-      }
-
-      if (event.key.toLowerCase() !== 'd') {
-        return;
-      }
-
-      event.preventDefault();
-      setShowDebugOverlay((previousValue) => !previousValue);
     };
 
     document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  // openLibrary is stable (defined with useCallback below, but we reference it
+  // via a ref to avoid stale closure)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appState]);
 
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+  // LIBRARY keyboard: number keys, arrows, Enter, Escape
+  useEffect(() => {
+    if (appState !== 'LIBRARY') return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+
+      const numericKeys: Record<string, number> = {
+        '1': 0, '2': 1, '3': 2, '4': 3, '5': 4,
+        '6': 5, '7': 6, '8': 7, '9': 8,
+      };
+
+      if (event.key in numericKeys) {
+        const idx = numericKeys[event.key];
+        if (idx !== undefined && idx < books.length) {
+          event.preventDefault();
+          setFocusedLibraryIndex(idx);
+          const book = books[idx];
+          if (book) {
+            void speakRef.current(
+              voiceDictionary.library.bookFocus(idx + 1, book.title, book.author),
+              { priority: 'high' },
+            );
+            openBook(book);
+          }
+        }
+        return;
+      }
+
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        setFocusedLibraryIndex((prev) => {
+          const next = Math.min(prev + 1, books.length - 1);
+          const book = books[next];
+          if (book) {
+            void speakRef.current(
+              voiceDictionary.library.bookFocus(next + 1, book.title, book.author),
+              { priority: 'high' },
+            );
+          }
+          return next;
+        });
+        return;
+      }
+
+      if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        setFocusedLibraryIndex((prev) => {
+          const next = Math.max(prev - 1, 0);
+          const book = books[next];
+          if (book) {
+            void speakRef.current(
+              voiceDictionary.library.bookFocus(next + 1, book.title, book.author),
+              { priority: 'high' },
+            );
+          }
+          return next;
+        });
+        return;
+      }
+
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        const book = books[focusedLibraryIndex];
+        if (book) {
+          openBook(book);
+        }
+        return;
+      }
+
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        void speakRef.current(voiceDictionary.library.back, { priority: 'high' });
+        setAppState('WELCOME');
+      }
     };
-  }, [viewState]);
 
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appState, books, focusedLibraryIndex]);
+
+  // Keep focused library item's DOM button in focus
   useEffect(() => {
-    if (!hasPointerMoved || !isZoneSpeechEnabled) {
-      return;
-    }
+    if (appState !== 'LIBRARY') return;
+    const list = libraryListRef.current;
+    if (!list) return;
+    const buttons = list.querySelectorAll<HTMLButtonElement>('button[data-book-index]');
+    const target = buttons[focusedLibraryIndex];
+    target?.focus();
+  }, [appState, focusedLibraryIndex]);
 
-    if (lastEnteredZoneRef.current === currentZone) {
-      return;
-    }
+  const openLibrary = useCallback(() => {
+    void speakRef.current(voiceDictionary.welcome.getStarted, { priority: 'high' });
+    setAppState('LIBRARY');
+  }, []);
 
-    lastEnteredZoneRef.current = currentZone;
-    lastIdleZoneRef.current = null;
-
-    void speak(voiceDictionary.zones[currentZone].enter, {
+  function openBook(book: Book) {
+    void speakRef.current(voiceDictionary.library.selected(book.title), {
       priority: 'high',
     });
-  }, [currentZone, hasPointerMoved, isZoneSpeechEnabled, speak]);
-
-  useEffect(() => {
-    if (!isIdle) {
-      lastIdleZoneRef.current = null;
-    }
-  }, [isIdle]);
-
-  useEffect(() => {
-    if (!hasPointerMoved || !isZoneSpeechEnabled || !isIdle) {
-      return;
-    }
-
-    if (lastIdleZoneRef.current === currentZone) {
-      return;
-    }
-
-    lastIdleZoneRef.current = currentZone;
-
-    void speak(voiceDictionary.zones[currentZone].idle, {
-      priority: 'normal',
-    });
-  }, [currentZone, hasPointerMoved, isIdle, isZoneSpeechEnabled, speak]);
-
-  function handleZoneActivate(zone: Zone) {
-    void speak(voiceDictionary.zones[zone].click, {
-      priority: 'high',
-    });
-
-    if (zone === 'back') {
-      window.history.back();
-      return;
-    }
-
-    if (zone === 'forward') {
-      window.history.forward();
-      return;
-    }
-
-    if (zone === 'books') {
-      setViewState('BOOKS');
-      setSelectedBook(null);
-      return;
-    }
-
-    if (zone === 'search') {
-      setViewState('SEARCH');
-      return;
-    }
-
-    setSelectedBook(null);
-    setViewState('DEFAULT');
+    const firstChapter = book.chapters[0];
+    setSelectedBook(book);
+    setSelectedChapterId(firstChapter?.id ?? '');
+    setAppState('READING');
   }
 
-  function handleBookSelect(book: Book) {
-    setSelectedBook(book);
-    setViewState('READING');
+  function handleCloseReader() {
+    setSelectedBook(null);
+    setSelectedChapterId('');
+    setAppState('LIBRARY');
+  }
+
+  function handleChapterChange(chapterId: string) {
+    setSelectedChapterId(chapterId);
+  }
+
+  function handleReplayGuide() {
+    if (appState === 'WELCOME') {
+      void speakRef.current(voiceDictionary.welcome.greeting, { priority: 'high' });
+    } else if (appState === 'LIBRARY') {
+      void speakRef.current(voiceDictionary.library.open(books.length), {
+        priority: 'high',
+      });
+    }
   }
 
   return (
     <main
       id="main-content"
-      ref={mainRef}
       tabIndex={-1}
       className="relative min-h-screen overflow-hidden bg-access-bg"
-      aria-labelledby="barrierfree-web-title"
+      aria-label="AccessReader"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,215,0,0.12),_transparent_38%),radial-gradient(circle_at_bottom,_rgba(0,255,136,0.08),_transparent_30%)]" />
-
-      <NavigationBar
-        currentViewLabel={currentViewLabel}
-        onReplayGuide={() => {
-          setOnboardingReplayTrigger((previousValue) => previousValue + 1);
-        }}
-      />
-
-      <section className="absolute inset-0">
-        {(Object.entries(ZONE_CARDS) as Array<[Zone, ZoneCard]>).map(
-          ([zone, zoneCard]) => {
-            const isActive = currentZone === zone;
-
-            return (
-              <button
-                key={zone}
-                type="button"
-                aria-label={zoneCard.ariaLabel}
-                className={[
-                  'absolute flex rounded-[1.75rem] border p-6 transition duration-200 focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-[-6px] focus-visible:outline-access-highlight',
-                  zoneCard.positionClassName,
-                  zoneCard.alignClassName,
-                  isActive
-                    ? 'border-access-highlight/80 bg-access-highlight/12 shadow-[0_0_0_1px_rgba(0,255,136,0.28),0_0_40px_rgba(0,255,136,0.08)]'
-                    : 'border-access-text/10 bg-access-zone/65 hover:border-access-accent/45 hover:bg-access-zone/80',
-                ].join(' ')}
-                onClick={() => {
-                  handleZoneActivate(zone);
-                }}
-              >
-                <div className="max-w-[18rem] space-y-3">
-                  <p className="text-lg uppercase tracking-[0.28em] text-access-accent/80">
-                    {zone === 'back'
-                      ? '\u2190 Back'
-                      : zone === 'forward'
-                      ? 'Forward \u2192'
-                      : zoneCard.title}
-                  </p>
-                  <h2 className="text-2xl font-semibold text-access-text sm:text-3xl">
-                    {zoneCard.title}
-                  </h2>
-                  <p className="max-w-[16rem] text-lg leading-8 text-access-text/72">
-                    {zoneCard.subtitle}
-                  </p>
-                </div>
-              </button>
-            );
-          },
-        )}
-      </section>
-
-      <section className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6 py-10">
-        <div className="w-full max-w-3xl rounded-[2rem] border border-access-accent/35 bg-access-bg/82 px-8 py-8 text-center shadow-[0_0_0_1px_rgba(255,215,0,0.15)] backdrop-blur">
-          <p className="text-lg uppercase tracking-[0.28em] text-access-highlight">
-            BarrierFree-Web
+      {/* WELCOME state */}
+      {appState === 'WELCOME' ? (
+        <div className="flex min-h-screen flex-col items-center justify-center px-6 py-16 text-center">
+          <p className="text-lg uppercase tracking-widest text-access-highlight">
+            AccessReader
           </p>
-          <h1
-            id="barrierfree-web-title"
-            className="mt-4 text-4xl font-semibold text-access-text sm:text-5xl"
-          >
+          <h1 className="mt-6 text-5xl font-semibold text-access-text">
             Voice-Guided Reading
           </h1>
-          <p className="mt-5 text-lg leading-8 text-access-text/82">
-            Move your mouse to explore the navigation zones. Click Books to open
-            the library, Search to type with voice feedback, or Home to return to
-            this view.
+          <p className="mt-5 text-xl text-access-text/70">
+            Move your mouse. Listen. Read.
           </p>
-
-          <div className="mt-8 grid gap-3 text-left sm:grid-cols-2">
-            <div
-              className="rounded-[1.5rem] border border-access-text/10 bg-access-zone/80 px-5 py-4"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              <p className="text-lg uppercase tracking-[0.22em] text-access-accent/80">
-                Current Zone
-              </p>
-              <p className="mt-2 text-2xl font-semibold text-access-text">
-                {ZONE_HEADLINES[currentZone]}
-              </p>
-              <p className="mt-2 text-lg leading-8 text-access-text/72">
-                {isIdle
-                  ? 'Mouse idle guidance is active.'
-                  : 'Move more slowly to hear contextual guidance.'}
-              </p>
-            </div>
-
-            <div
-              className="rounded-[1.5rem] border border-access-text/10 bg-access-zone/80 px-5 py-4"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              <p className="text-lg uppercase tracking-[0.22em] text-access-accent/80">
-                Nearby Guidance
-              </p>
-              <p className="mt-2 text-lg leading-8 text-access-text">
-                {nearbyGuidanceText ?? 'Move to another zone to hear navigation help.'}
-              </p>
-            </div>
-
-            <div
-              className="rounded-[1.5rem] border border-access-text/10 bg-access-zone/80 px-5 py-4"
-              role="status"
-              aria-live="polite"
-            >
-              <p className="text-lg uppercase tracking-[0.22em] text-access-accent/80">
-                Library Status
-              </p>
-              <p className="mt-2 text-lg leading-8 text-access-text">
-                {bookLoadState === 'loading'
-                  ? 'Loading public-domain books.'
-                  : bookLoadState === 'error'
-                  ? 'Books could not be loaded.'
-                  : `${books.length} books ready to explore.`}
-              </p>
-            </div>
-
-            <div
-              className="rounded-[1.5rem] border border-access-text/10 bg-access-zone/80 px-5 py-4"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              <p className="text-lg uppercase tracking-[0.22em] text-access-accent/80">
-                Search
-              </p>
-              <p className="mt-2 text-lg leading-8 text-access-text">
-                {lastSearchQuery
-                  ? `Last search: ${lastSearchQuery}`
-                  : 'No search has been completed yet.'}
-              </p>
-            </div>
-          </div>
-
-          <p className="mt-8 text-lg uppercase tracking-[0.22em] text-access-text/62">
-            Press D to toggle the debug overlay.
-          </p>
+          <button
+            ref={getStartedRef}
+            type="button"
+            aria-label="Get started, open book library"
+            className="mt-12 min-h-[64px] min-w-[280px] rounded-2xl bg-access-accent text-2xl font-semibold text-access-bg transition hover:bg-access-accent/90 focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight"
+            onClick={openLibrary}
+          >
+            Get Started
+          </button>
         </div>
-      </section>
-
-      <MouseZoneOverlay
-        currentZone={currentZone}
-        mousePosition={mousePosition}
-        isVisible={showDebugOverlay}
-      />
-
-      {viewState === 'BOOKS' ? (
-        <section
-          className="fixed inset-x-6 top-6 z-30 mx-auto max-w-4xl rounded-[2rem] border border-access-accent/40 bg-access-bg/96 p-6 shadow-[0_0_0_1px_rgba(255,215,0,0.16)] backdrop-blur"
-          aria-label="Book list"
-        >
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <p className="text-lg uppercase tracking-[0.26em] text-access-highlight">
-                Library
-              </p>
-              <h2 className="mt-3 text-3xl font-semibold text-access-text">
-                Choose a book
-              </h2>
-              <p className="mt-2 max-w-2xl text-lg leading-8 text-access-text/76">
-                Select one of the available public-domain titles to begin reading.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              aria-label="Close book list"
-              className="min-h-[44px] min-w-[44px] shrink-0 rounded-full border border-access-accent/35 px-5 text-lg font-medium text-access-text transition hover:border-access-accent hover:text-access-accent focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-access-highlight motion-reduce:transition-none"
-              onClick={() => {
-                setViewState('DEFAULT');
-              }}
-            >
-              Close
-            </button>
-          </div>
-
-          <div className="mt-8 grid gap-4">
-            {bookLoadState === 'loading' ? (
-              <div className="rounded-[1.5rem] border border-access-text/10 bg-access-zone/85 px-5 py-6 text-lg text-access-text/82">
-                Loading books...
-              </div>
-            ) : null}
-
-            {bookLoadState === 'error' ? (
-              <div className="rounded-[1.5rem] border border-red-500/40 bg-red-500/10 px-5 py-6 text-lg text-access-text">
-                The book library could not be loaded. Please try again.
-              </div>
-            ) : null}
-
-            {bookLoadState === 'ready'
-              ? books.map((book) => (
-                  <button
-                    key={book.id}
-                    type="button"
-                    aria-label={`Open ${book.title} by ${book.author}`}
-                    className="rounded-[1.5rem] border border-access-text/10 bg-access-zone/85 px-5 py-5 text-left transition hover:border-access-accent/45 hover:bg-access-zone focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-access-highlight"
-                    onClick={() => {
-                      handleBookSelect(book);
-                    }}
-                  >
-                    <p className="text-lg uppercase tracking-[0.22em] text-access-highlight">
-                      {book.author}
-                    </p>
-                    <h3 className="mt-3 text-2xl font-semibold text-access-text">
-                      {book.title}
-                    </h3>
-                    <p className="mt-2 text-lg leading-8 text-access-text/72">
-                      {book.chapters[0]?.title ?? 'Opening chapter'}
-                    </p>
-                  </button>
-                ))
-              : null}
-          </div>
-        </section>
       ) : null}
 
-      <BookReader
-        book={viewState === 'READING' ? selectedBook : null}
-        onClose={() => {
-          setViewState('BOOKS');
-        }}
-      />
+      {/* LIBRARY state */}
+      {appState === 'LIBRARY' ? (
+        <div className="flex min-h-screen flex-col px-6 py-10">
+          <div className="mx-auto w-full max-w-3xl">
+            <h1 className="text-4xl font-semibold text-access-text">Library</h1>
+            <p className="mt-2 text-xl text-access-text/60">
+              {booksLoaded ? `${books.length} books available` : 'Loading...'}
+            </p>
 
-      <TypingEditor
-        isOpen={viewState === 'SEARCH'}
-        onClose={() => {
-          setViewState('DEFAULT');
-        }}
-        onSearch={(query) => {
-          setLastSearchQuery(query);
-          setViewState('DEFAULT');
-        }}
-      />
+            <ol
+              ref={libraryListRef}
+              className="mt-8 flex flex-col gap-3"
+              aria-label="Book list"
+            >
+              {books.map((book, index) => {
+                const isFocused = focusedLibraryIndex === index;
+                return (
+                  <li key={book.id}>
+                    <button
+                      type="button"
+                      data-book-index={index}
+                      aria-label={`${index + 1}. ${book.title} by ${book.author}`}
+                      aria-current={isFocused ? 'true' : undefined}
+                      className={[
+                        'flex w-full min-h-[72px] items-center gap-5 rounded-2xl border px-5 py-4 text-left transition',
+                        'focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight',
+                        isFocused
+                          ? 'border-access-accent bg-access-zone shadow-[0_0_0_1px_rgba(255,215,0,0.3)]'
+                          : 'border-access-text/10 bg-access-zone/60 hover:border-access-accent/50 hover:bg-access-zone',
+                      ].join(' ')}
+                      onClick={() => {
+                        setFocusedLibraryIndex(index);
+                        openBook(book);
+                      }}
+                    >
+                      <span
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-access-accent text-xl font-bold text-access-bg"
+                        aria-hidden="true"
+                      >
+                        {index + 1}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate text-xl font-semibold text-access-text">
+                          {book.title}
+                        </p>
+                        <p className="mt-1 truncate text-lg text-access-text/60">
+                          {book.author}
+                        </p>
+                      </div>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
 
-      <Onboarding
-        replayTrigger={onboardingReplayTrigger}
-        onVisibilityChange={setIsOnboardingVisible}
-        onDismiss={() => {
-          mainRef.current?.focus();
-        }}
-      />
+            <p className="mt-8 text-lg text-access-text/40">
+              Press 1–9 to select a book, Arrow keys to navigate, Enter to open,
+              Escape to go back.
+            </p>
+          </div>
+        </div>
+      ) : null}
+
+      {/* READING state */}
+      {appState === 'READING' && selectedBook !== null ? (
+        <BookReader
+          book={selectedBook}
+          chapterId={selectedChapterId}
+          onClose={handleCloseReader}
+          onChapterChange={handleChapterChange}
+        />
+      ) : null}
+
+      <SettingsButton onReplayGuide={handleReplayGuide} />
     </main>
   );
 }
