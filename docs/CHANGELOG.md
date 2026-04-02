@@ -52,6 +52,35 @@ Format: Stage > Task > Agent > Status
 - **Next Task**: Task #2 — Core TTS engine and voice dictionary
 
 ## [Stage 2: Features] — Pending
+- **Status**: ✅ Task #2 Complete
+- **Agent**: Codex
+- **Date**: 2026-04-02
+- **Changes**:
+  - Implemented `src/lib/speechUtils.ts` as the centralized Web Speech API wrapper
+  - Added speech priority handling for interrupt vs queued playback
+  - Split long text into sentence-based utterances to avoid Chrome cutoff issues
+  - Added English voice selection and async voice initialization support
+  - Implemented `src/hooks/useTTS.ts` to expose TTS controls and support detection to React components
+  - Verified the implementation with `npm run lint` and `npm run build`
+- **Files Created**:
+  - `src/lib/speechUtils.ts`
+  - `src/hooks/useTTS.ts`
+- **Next Task**: Task #3 — Mouse tracking and zone detection hook
+
+- **Status**: ✅ Task #3 Complete
+- **Agent**: Codex
+- **Date**: 2026-04-02
+- **Changes**:
+  - Implemented `src/hooks/useMouseZone.ts` with 5-zone viewport detection
+  - Added nearest-zone fallback handling for the lower-center gap area
+  - Added adjacent zone guidance metadata for voice prompts
+  - Added 800ms idle detection with reset-on-move behavior
+  - Throttled mousemove processing with `requestAnimationFrame`
+  - Verified the hook with `npm run lint` and `npm run build`
+- **Files Created**:
+  - `src/hooks/useMouseZone.ts`
+- **Next Task**: Task #4 — Voice guidance dictionary
+
 ## [Stage 3: UI] — Pending
 ## [Stage 4: QA] — Pending
 ## [Stage 5: Deploy] — Pending
