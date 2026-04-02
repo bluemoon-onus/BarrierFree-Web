@@ -40,12 +40,10 @@ export default function HomePage() {
       });
   }, []);
 
-  // WELCOME: speak greeting once on mount
+  // WELCOME: focus the Get Started button on mount; greeting is spoken on first interaction
+  // (Chrome blocks speechSynthesis before user gesture, so we don't auto-speak)
   useEffect(() => {
-    if (appState !== 'WELCOME' || hasAnnouncedWelcomeRef.current) return;
-    hasAnnouncedWelcomeRef.current = true;
-    void speakRef.current(voiceDictionary.welcome.greeting, { priority: 'high' });
-    // Focus the Get Started button after a short tick for reliable focus
+    if (appState !== 'WELCOME') return;
     const id = window.setTimeout(() => {
       getStartedRef.current?.focus();
     }, 100);
@@ -56,6 +54,8 @@ export default function HomePage() {
   useEffect(() => {
     if (appState !== 'LIBRARY') {
       hasAnnouncedLibraryRef.current = false;
+      // Reset welcome announcement so greeting replays when returning to WELCOME
+      if (appState === 'WELCOME') hasAnnouncedWelcomeRef.current = false;
       return;
     }
     if (hasAnnouncedLibraryRef.current) return;
@@ -235,6 +235,12 @@ export default function HomePage() {
             type="button"
             aria-label="Get started, open book library"
             className="mt-12 min-h-[64px] min-w-[280px] rounded-2xl bg-access-accent text-2xl font-semibold text-access-bg transition hover:bg-access-accent/90 focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight"
+            onFocus={() => {
+              if (!hasAnnouncedWelcomeRef.current) {
+                hasAnnouncedWelcomeRef.current = true;
+                void speakRef.current(voiceDictionary.welcome.greeting, { priority: 'high' });
+              }
+            }}
             onClick={openLibrary}
           >
             Get Started

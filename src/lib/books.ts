@@ -25,7 +25,7 @@ export async function loadBooks(): Promise<Book[]> {
   }
 
   const response = await fetch('/books/books.json', {
-    cache: 'force-cache',
+    cache: 'no-store',
   });
 
   if (!response.ok) {
