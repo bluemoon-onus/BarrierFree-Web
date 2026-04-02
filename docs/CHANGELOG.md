@@ -81,6 +81,22 @@ Format: Stage > Task > Agent > Status
   - `src/hooks/useMouseZone.ts`
 - **Next Task**: Task #4 — Voice guidance dictionary
 
+- **Status**: ✅ Task #4 Complete
+- **Agent**: Claude CLI
+- **Date**: 2026-04-02
+- **Changes**:
+  - Created `src/lib/voiceDictionary.ts` with all voice guidance text strings
+  - Defined onboarding messages (welcome, instructions, startPrompt)
+  - Defined zone-level voice strings (enter, idle, click) for all 5 zones
+  - Added navigation direction helper using template literals
+  - Added keyboard feedback strings (keyPress, enter, escape, space, backspace)
+  - Added typo correction voice flow strings (checking, noTypo, hasTypo, accepted, retry, error)
+  - Added book reader voice strings (nowReading, paused, resumed, stopped, nextParagraph, prevParagraph)
+  - Verified with `npm run lint` and `npm run build`
+- **Files Created**:
+  - `src/lib/voiceDictionary.ts`
+- **Next Task**: Task #5 — Keyboard reader hook (Codex)
+
 ## [Stage 3: UI] — Pending
 ## [Stage 4: QA] — Pending
 ## [Stage 5: Deploy] — Pending
