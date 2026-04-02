@@ -135,12 +135,19 @@ export async function speak(text: string, options: SpeakOptions = {}) {
       pendingResolve = resolve;
 
       const done = () => {
+        window.clearTimeout(safetyTimer);
         if (isBlob) URL.revokeObjectURL(src);
         if (currentAudio === audio) currentAudio = null;
         if (pendingResolve === resolve) pendingResolve = null;
         emit(TTS_STATE_EVENT);
         resolve();
       };
+
+      // Safety: if audio events never fire (e.g. corrupt MP3), resolve after 30s
+      const safetyTimer = window.setTimeout(() => {
+        console.warn('[TTS] audio timeout — forcing resolve');
+        done();
+      }, 30_000);
 
       audio.onended = done;
       audio.onerror = done;

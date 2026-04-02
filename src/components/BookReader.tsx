@@ -23,22 +23,29 @@ type ReaderState = 'idle' | 'reading' | 'paused';
 
 /**
  * Split a paragraph into sentences.
- * Splits on [.!?]+ followed by whitespace then capital letter or opening quote.
+ * Splits on [.!?]+ followed by whitespace, skipping common abbreviations
+ * (Mr. Dr. Mrs. etc.) identified by 1-3 uppercase-starting chars before the period.
  */
 function splitSentences(paragraph: string): string[] {
   if (!paragraph.trim()) return [];
+  // Normalize embedded line breaks (from bookParser) to spaces
+  const text = paragraph.replace(/\s+/g, ' ').trim();
   const result: string[] = [];
-  const re = /([.!?]+)\s+(?=[A-Z"'\u201C\u2018])/g;
+  const re = /([.!?]+)\s+/g;
   let start = 0;
   let match: RegExpExecArray | null;
-  while ((match = re.exec(paragraph)) !== null) {
-    const sentence = paragraph.slice(start, match.index + match[1].length).trim();
-    if (sentence.length > 2) result.push(sentence);
+  while ((match = re.exec(text)) !== null) {
+    // Heuristic: skip abbreviations — word before punctuation is ≤3 chars, starts uppercase
+    const before = text.slice(0, match.index);
+    const lastWord = before.split(/\s+/).pop() ?? '';
+    if (lastWord.length <= 3 && /^[A-Z]/.test(lastWord)) continue;
+    const sentence = text.slice(start, match.index + match[1].length).trim();
+    if (sentence.length > 3) result.push(sentence);
     start = match.index + match[0].length;
   }
-  const tail = paragraph.slice(start).trim();
-  if (tail.length > 2) result.push(tail);
-  return result.length > 0 ? result : [paragraph.trim()];
+  const tail = text.slice(start).trim();
+  if (tail.length > 3) result.push(tail);
+  return result.length > 0 ? result : [text];
 }
 
 export function BookReader({
@@ -73,6 +80,13 @@ export function BookReader({
     if (!book) return null;
     return book.chapters.find((ch) => ch.id === chapterId) ?? book.chapters[0] ?? null;
   }, [book, chapterId]);
+
+  // Beta: only chapters 1 and 2 (index 0 and 1) are available
+  const chapterIndex = useMemo(() => {
+    if (!book || !activeChapter) return -1;
+    return book.chapters.findIndex((ch) => ch.id === activeChapter.id);
+  }, [book, activeChapter]);
+  const isBeyondBeta = chapterIndex >= 2;
 
   const totalSentences = sentences.length;
   const currentSentence = sentences[sentenceIndex] ?? '';
@@ -306,7 +320,44 @@ export function BookReader({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [book, paragraphBoundaries, sentenceIndex, readerState, totalSentences, speak]);
 
+  // ─── Beta wall effect ────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!isBeyondBeta) return;
+    invalidatePlaybackRef.current();
+    void speak(voiceDictionary.reader.betaEnd, { priority: 'high' });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isBeyondBeta]);
+
   if (!book || !activeChapter) return null;
+
+  if (isBeyondBeta) {
+    return (
+      <section
+        className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-access-bg px-8"
+        aria-label="End of beta service"
+        role="alert"
+      >
+        <p className="max-w-xl text-center text-3xl font-semibold leading-relaxed text-access-accent">
+          End of Beta Service
+        </p>
+        <p className="max-w-xl text-center text-xl leading-relaxed text-access-text/70">
+          Reading beyond Chapter 2 is not yet supported in the beta.
+          Thank you for trying AccessReader.
+        </p>
+        <button
+          type="button"
+          aria-label="Return to library"
+          className="min-h-[44px] min-w-[44px] rounded-full border border-access-accent/40 px-8 py-3 text-lg font-medium text-access-text transition hover:border-access-accent hover:text-access-accent focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight motion-reduce:transition-none"
+          onClick={() => {
+            void speak(voiceDictionary.reader.back, { priority: 'high' });
+            onCloseRef.current();
+          }}
+        >
+          Return to Library (Esc)
+        </button>
+      </section>
+    );
+  }
 
   return (
     <section

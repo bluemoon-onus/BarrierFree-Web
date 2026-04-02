@@ -21,6 +21,7 @@ export async function loadChapterContent(
   const rawParagraphs = joined.split(/\n\s*\n/);
 
   return rawParagraphs
-    .map((paragraph) => paragraph.trim())
+    // Normalize within-paragraph line breaks to single spaces
+    .map((paragraph) => paragraph.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim())
     .filter((paragraph) => paragraph.length >= MIN_PARAGRAPH_LENGTH);
 }

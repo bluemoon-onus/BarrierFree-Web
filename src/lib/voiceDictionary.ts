@@ -99,6 +99,7 @@ const voiceDictionary = {
     endOfChapter: 'End of chapter.',
     loading: 'Loading chapter.',
     back: 'Returning to library.',
+    betaEnd: 'Reading beyond this point is not yet supported in the beta. Thank you for trying AccessReader.',
   },
 
   typingEditor: {
