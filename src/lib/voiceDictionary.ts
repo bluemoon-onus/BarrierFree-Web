@@ -91,11 +91,11 @@ const voiceDictionary = {
     chapterStart: (bookTitle: string, chapterTitle: string): string =>
       `Now reading ${bookTitle}, ${chapterTitle}.`,
     controlsGuide:
-      'Space to pause or resume. Down arrow for next paragraph. Up arrow to restart, or go back if near the start. Escape to return to the library.',
+      'Space to pause or resume. Down or right arrow for next sentence. Up or left arrow for previous sentence. Escape to return to the library.',
     paused: 'Paused.',
     resumed: 'Resuming.',
-    nextParagraph: 'Next.',
-    prevParagraph: 'Previous.',
+    nextSentence: 'Next.',
+    prevSentence: 'Previous.',
     endOfChapter: 'End of chapter.',
     loading: 'Loading chapter.',
     back: 'Returning to library.',

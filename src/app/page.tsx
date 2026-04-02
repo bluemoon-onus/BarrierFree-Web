@@ -6,6 +6,7 @@ import { BookReader } from '@/components/BookReader';
 import { SettingsButton } from '@/components/SettingsButton';
 import { type Book, loadBooks } from '@/lib/books';
 import { useTTS } from '@/hooks/useTTS';
+import { TTS_BLOCKED_EVENT } from '@/lib/speechUtils';
 import voiceDictionary from '@/lib/voiceDictionary';
 
 type AppState = 'WELCOME' | 'LIBRARY' | 'READING';
@@ -22,9 +23,7 @@ export default function HomePage() {
 
   const getStartedRef = useRef<HTMLButtonElement | null>(null);
   const libraryListRef = useRef<HTMLOListElement | null>(null);
-  const hasAnnouncedWelcomeRef = useRef(false);
   const hasAnnouncedLibraryRef = useRef(false);
-  const isOpeningLibraryRef = useRef(false);
   const speakRef = useRef(speak);
 
   speakRef.current = speak;
@@ -41,14 +40,47 @@ export default function HomePage() {
       });
   }, []);
 
-  // WELCOME: focus the Get Started button on mount; greeting is spoken on first interaction
-  // (Chrome blocks speechSynthesis before user gesture, so we don't auto-speak)
+  // WELCOME: focus button + speak greeting.
+  // Safari speaks immediately. Chrome requires a user gesture — we detect the
+  // "not-allowed" block via TTS_BLOCKED_EVENT and re-speak on the first interaction.
   useEffect(() => {
     if (appState !== 'WELCOME') return;
-    const id = window.setTimeout(() => {
-      getStartedRef.current?.focus();
-    }, 100);
-    return () => window.clearTimeout(id);
+
+    const focusId = window.setTimeout(() => getStartedRef.current?.focus(), 100);
+
+    // Track whether the greeting has been successfully queued this session
+    let announced = false;
+    const announce = () => {
+      if (announced) return;
+      announced = true;
+      void speakRef.current(voiceDictionary.welcome.greeting, { priority: 'high' });
+    };
+
+    // Attempt immediately (Safari + Chrome with prior activation)
+    announce();
+
+    // Chrome autoplay fallback: reset and re-announce on first user interaction
+    let interactionCleanup: (() => void) | null = null;
+    const onBlocked = () => {
+      announced = false; // allow re-announcement
+      const onInteraction = () => {
+        announce();
+        interactionCleanup = null;
+      };
+      document.addEventListener('keydown', onInteraction, { once: true });
+      document.addEventListener('pointerdown', onInteraction, { once: true });
+      interactionCleanup = () => {
+        document.removeEventListener('keydown', onInteraction);
+        document.removeEventListener('pointerdown', onInteraction);
+      };
+    };
+    window.addEventListener(TTS_BLOCKED_EVENT, onBlocked, { once: true });
+
+    return () => {
+      window.clearTimeout(focusId);
+      window.removeEventListener(TTS_BLOCKED_EVENT, onBlocked);
+      interactionCleanup?.();
+    };
   }, [appState]);
 
   // LIBRARY: speak announcement once when state becomes LIBRARY and books are loaded
@@ -57,9 +89,7 @@ export default function HomePage() {
       hasAnnouncedLibraryRef.current = false;
       return;
     }
-
-    if (!booksLoaded) return;
-    if (hasAnnouncedLibraryRef.current) return;
+    if (!booksLoaded || hasAnnouncedLibraryRef.current) return;
 
     hasAnnouncedLibraryRef.current = true;
     setFocusedLibraryIndex(0);
@@ -178,25 +208,11 @@ export default function HomePage() {
     target?.focus();
   }, [appState, focusedLibraryIndex]);
 
-  const openLibrary = useCallback(async () => {
-    if (isOpeningLibraryRef.current) {
-      return;
-    }
-
-    isOpeningLibraryRef.current = true;
-
-    try {
-      if (!hasAnnouncedWelcomeRef.current) {
-        hasAnnouncedWelcomeRef.current = true;
-        await speakRef.current(voiceDictionary.welcome.greeting, {
-          priority: 'high',
-        });
-      }
-
-      setAppState('LIBRARY');
-    } finally {
-      isOpeningLibraryRef.current = false;
-    }
+  const openLibrary = useCallback(() => {
+    // Speak the short "Opening library" cue and change state immediately — do NOT
+    // await a long greeting here, or the button will feel unresponsive.
+    void speakRef.current(voiceDictionary.welcome.getStarted, { priority: 'high' });
+    setAppState('LIBRARY');
   }, []);
 
   function openBook(book: Book) {
@@ -253,9 +269,7 @@ export default function HomePage() {
             type="button"
             aria-label="Get started, open book library"
             className="mt-12 min-h-[64px] min-w-[280px] rounded-2xl bg-access-accent text-2xl font-semibold text-access-bg transition hover:bg-access-accent/90 focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight"
-            onClick={() => {
-              void openLibrary();
-            }}
+            onClick={openLibrary}
           >
             Get Started
           </button>

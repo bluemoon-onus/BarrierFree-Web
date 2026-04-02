@@ -24,6 +24,7 @@ const DEFAULT_VOICE_PREFERENCES: VoicePreferences = {
 };
 
 const TTS_STATE_EVENT = "barrierfree-web:tts-state-change";
+export const TTS_BLOCKED_EVENT = "barrierfree-web:tts-blocked";
 const VOICE_LOAD_TIMEOUT_MS = 1200;
 
 let voicePreferences = { ...DEFAULT_VOICE_PREFERENCES };
@@ -146,7 +147,15 @@ function registerBatch(utterances: SpeechSynthesisUtterance[]) {
         emitSpeechStateChange();
       };
       utterance.onend = markUtteranceComplete;
-      utterance.onerror = markUtteranceComplete;
+      utterance.onerror = (ev) => {
+        // Detect Chrome autoplay block ("not-allowed") and notify page-level listeners
+        if ((ev as SpeechSynthesisErrorEvent).error === "not-allowed") {
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent(TTS_BLOCKED_EVENT));
+          }
+        }
+        markUtteranceComplete();
+      };
     });
   });
 }
@@ -289,7 +298,13 @@ export async function speak(text: string, options: SpeakOptions = {}) {
     synthesis.cancel();
   }
 
-  await initTTS();
+  // Do NOT await initTTS() here — any await before synthesis.speak() breaks Chrome's
+  // user-gesture activation chain, causing silent audio blocks.
+  // createUtterances gracefully handles missing voices (falls back to browser default).
+  // If voices haven't loaded yet, they will be available on the next speak() call.
+  if (synthesis.getVoices().length === 0) {
+    void initTTS(); // fire-and-forget pre-warm; don't await
+  }
 
   const utterances = createUtterances(normalizedText, options);
   const batchPromise = registerBatch(utterances);
