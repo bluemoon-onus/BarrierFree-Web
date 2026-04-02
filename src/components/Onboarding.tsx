@@ -209,7 +209,7 @@ export default function Onboarding({
           isExiting ? 'scale-[0.98] opacity-0' : 'scale-100 opacity-100',
         ].join(' ')}
       >
-        <p className="text-sm uppercase tracking-[0.34em] text-access-highlight">
+        <p className="text-lg uppercase tracking-[0.28em] text-access-highlight">
           Welcome Guide
         </p>
         <h2
@@ -222,16 +222,28 @@ export default function Onboarding({
         <div
           id="onboarding-description"
           className="mt-8 space-y-5 text-lg leading-8 text-access-text/86"
+          aria-live="polite"
         >
           <p>{voiceDictionary.onboarding.welcome}</p>
           <p>{voiceDictionary.onboarding.instructions}</p>
           <p className="text-access-accent">{voiceDictionary.onboarding.startPrompt}</p>
         </div>
 
-        <div className="mt-8 rounded-[1.5rem] border border-access-highlight/35 bg-access-bg/65 px-5 py-4 text-base leading-7 text-access-text/80">
+        <div className="mt-8 rounded-[1.5rem] border border-access-highlight/35 bg-access-bg/65 px-5 py-4 text-lg leading-8 text-access-text/80">
           Click anywhere or press any key to continue. The guide will also close
           automatically after the spoken intro finishes.
         </div>
+
+        <button
+          type="button"
+          aria-label="Dismiss welcome guide and begin using the app"
+          className="mt-6 min-h-[44px] min-w-[44px] rounded-full border border-access-highlight/50 bg-access-highlight/12 px-8 py-3 text-lg font-semibold text-access-highlight transition hover:bg-access-highlight/20 focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-access-highlight motion-reduce:transition-none"
+          onClick={() => {
+            dismissGuide(true);
+          }}
+        >
+          Get Started
+        </button>
       </section>
     </div>
   );

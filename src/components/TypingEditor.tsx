@@ -330,11 +330,12 @@ export default function TypingEditor({
       role="dialog"
       aria-modal="true"
       aria-label={voiceDictionary.typingEditor.title}
+      aria-describedby="typing-editor-status"
     >
       <div className="w-full max-w-4xl rounded-[2rem] border border-access-accent/50 bg-access-zone px-8 py-10 text-center shadow-[0_0_0_1px_rgba(255,215,0,0.14)]">
         <div className="mb-8 flex items-start justify-between gap-4">
           <div className="text-left">
-            <p className="text-sm uppercase tracking-[0.28em] text-access-highlight">
+            <p className="text-lg uppercase tracking-[0.22em] text-access-highlight">
               {voiceDictionary.zones.search.enter}
             </p>
             <h2 className="mt-3 text-3xl font-semibold text-access-text sm:text-4xl">
@@ -344,7 +345,7 @@ export default function TypingEditor({
           <button
             type="button"
             aria-label={voiceDictionary.typingEditor.close}
-            className="min-h-11 rounded-full border border-access-accent/40 px-5 text-sm font-medium text-access-text transition hover:border-access-accent hover:text-access-accent"
+            className="min-h-[44px] min-w-[44px] shrink-0 rounded-full border border-access-accent/40 px-5 text-lg font-medium text-access-text transition hover:border-access-accent hover:text-access-accent focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-access-highlight motion-reduce:transition-none"
             onClick={() => handleCloseRef.current()}
           >
             Esc
@@ -352,7 +353,13 @@ export default function TypingEditor({
         </div>
 
         <div className="mx-auto max-w-3xl rounded-[1.75rem] border border-access-text/10 bg-access-bg px-6 py-12">
-          <p className="mb-5 text-sm uppercase tracking-[0.24em] text-access-accent">
+          <p
+            id="typing-editor-status"
+            className="mb-5 text-lg uppercase tracking-[0.18em] text-access-accent"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {statusText}
           </p>
 
@@ -366,17 +373,17 @@ export default function TypingEditor({
                   )}
               </p>
               <div className="rounded-[1.5rem] border border-access-highlight/35 bg-access-zone px-6 py-6">
-                <p className="text-sm uppercase tracking-[0.22em] text-access-highlight">
+                <p className="text-lg uppercase tracking-[0.18em] text-access-highlight">
                   {voiceDictionary.typingEditor.correctedLabel}
                 </p>
                 <p className="mt-4 break-words text-4xl font-semibold text-access-text sm:text-5xl">
                   {pendingResult.corrected}
                 </p>
               </div>
-              <p className="text-base text-access-text/70">
+              <p className="text-lg text-access-text/70">
                 {voiceDictionary.typingEditor.originalLabel}: {pendingResult.original}
               </p>
-              <p className="text-base text-access-text/80">
+              <p className="text-lg text-access-text/80">
                 {voiceDictionary.typingEditor.acceptHint} {voiceDictionary.typingEditor.retryHint}
               </p>
             </div>
@@ -386,7 +393,7 @@ export default function TypingEditor({
                 {currentText || (
                   <span className="text-access-text/35">
                     {voiceDictionary.typingEditor.idle}
-                    <span className="ml-2 inline-block h-[1.1em] w-1 animate-pulse rounded-full bg-access-accent align-middle" />
+                    <span className="ml-2 inline-block h-[1.1em] w-1 animate-pulse motion-reduce:animate-none rounded-full bg-access-accent align-middle" aria-hidden="true" />
                   </span>
                 )}
               </p>
@@ -395,11 +402,15 @@ export default function TypingEditor({
         </div>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <div className="rounded-full border border-access-text/10 bg-access-bg px-5 py-3 text-sm text-access-text/80">
+          <div className="rounded-full border border-access-text/10 bg-access-bg px-5 py-3 text-lg text-access-text/80">
             {viewState}
           </div>
           {lastKey ? (
-            <div className="rounded-full border border-access-highlight/40 bg-access-highlight/10 px-5 py-3 text-sm text-access-highlight">
+            <div
+              className="rounded-full border border-access-highlight/40 bg-access-highlight/10 px-5 py-3 text-lg text-access-highlight"
+              aria-live="polite"
+              aria-atomic="true"
+            >
               {voiceDictionary.typingEditor.lastKeyLabel}: {lastKey}
             </div>
           ) : null}

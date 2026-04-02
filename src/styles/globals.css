@@ -23,11 +23,40 @@ input,
 select,
 textarea {
   min-height: 44px;
+  min-width: 44px;
 }
 
 ::selection {
   background-color: #ffd700;
   color: #000000;
+}
+
+/* Global focus-visible: gold ring, visible on all backgrounds */
+:focus-visible {
+  outline: 4px solid #ffd700;
+  outline-offset: 4px;
+}
+
+/* Skip navigation link — visually hidden until focused */
+.skip-to-content {
+  position: absolute;
+  top: -9999px;
+  left: 0;
+  z-index: 9999;
+  padding: 0.75rem 1.5rem;
+  background-color: #000000;
+  color: #ffd700;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 3px solid #ffd700;
+  border-radius: 0 0 0.5rem 0;
+}
+
+.skip-to-content:focus-visible {
+  top: 0;
+  outline: 4px solid #00ff88;
+  outline-offset: 2px;
 }
 
 @media (prefers-contrast: more) {
@@ -36,8 +65,35 @@ textarea {
     color: #ffffff;
   }
 
+  /* Thicker, high-visibility borders on all interactive and container elements */
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  [role="dialog"],
+  [role="region"],
+  section,
+  header,
+  nav {
+    border-width: 2px !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+  }
+
   :focus-visible {
-    outline: 3px solid #00ff88;
+    outline: 4px solid #ffd700;
     outline-offset: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

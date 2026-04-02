@@ -248,6 +248,7 @@ export default function HomePage() {
 
   return (
     <main
+      id="main-content"
       ref={mainRef}
       tabIndex={-1}
       className="relative min-h-screen overflow-hidden bg-access-bg"
@@ -285,7 +286,7 @@ export default function HomePage() {
                 }}
               >
                 <div className="max-w-[18rem] space-y-3">
-                  <p className="text-xs uppercase tracking-[0.34em] text-access-accent/80">
+                  <p className="text-lg uppercase tracking-[0.28em] text-access-accent/80">
                     {zone === 'back'
                       ? '\u2190 Back'
                       : zone === 'forward'
@@ -295,7 +296,7 @@ export default function HomePage() {
                   <h2 className="text-2xl font-semibold text-access-text sm:text-3xl">
                     {zoneCard.title}
                   </h2>
-                  <p className="max-w-[16rem] text-base leading-7 text-access-text/72">
+                  <p className="max-w-[16rem] text-lg leading-8 text-access-text/72">
                     {zoneCard.subtitle}
                   </p>
                 </div>
@@ -307,7 +308,7 @@ export default function HomePage() {
 
       <section className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6 py-10">
         <div className="w-full max-w-3xl rounded-[2rem] border border-access-accent/35 bg-access-bg/82 px-8 py-8 text-center shadow-[0_0_0_1px_rgba(255,215,0,0.15)] backdrop-blur">
-          <p className="text-sm uppercase tracking-[0.34em] text-access-highlight">
+          <p className="text-lg uppercase tracking-[0.28em] text-access-highlight">
             BarrierFree-Web
           </p>
           <h1
@@ -323,22 +324,30 @@ export default function HomePage() {
           </p>
 
           <div className="mt-8 grid gap-3 text-left sm:grid-cols-2">
-            <div className="rounded-[1.5rem] border border-access-text/10 bg-access-zone/80 px-5 py-4">
-              <p className="text-xs uppercase tracking-[0.26em] text-access-accent/80">
+            <div
+              className="rounded-[1.5rem] border border-access-text/10 bg-access-zone/80 px-5 py-4"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <p className="text-lg uppercase tracking-[0.22em] text-access-accent/80">
                 Current Zone
               </p>
               <p className="mt-2 text-2xl font-semibold text-access-text">
                 {ZONE_HEADLINES[currentZone]}
               </p>
-              <p className="mt-2 text-sm leading-7 text-access-text/72">
+              <p className="mt-2 text-lg leading-8 text-access-text/72">
                 {isIdle
                   ? 'Mouse idle guidance is active.'
                   : 'Move more slowly to hear contextual guidance.'}
               </p>
             </div>
 
-            <div className="rounded-[1.5rem] border border-access-text/10 bg-access-zone/80 px-5 py-4">
-              <p className="text-xs uppercase tracking-[0.26em] text-access-accent/80">
+            <div
+              className="rounded-[1.5rem] border border-access-text/10 bg-access-zone/80 px-5 py-4"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <p className="text-lg uppercase tracking-[0.22em] text-access-accent/80">
                 Nearby Guidance
               </p>
               <p className="mt-2 text-lg leading-8 text-access-text">
@@ -346,8 +355,12 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="rounded-[1.5rem] border border-access-text/10 bg-access-zone/80 px-5 py-4">
-              <p className="text-xs uppercase tracking-[0.26em] text-access-accent/80">
+            <div
+              className="rounded-[1.5rem] border border-access-text/10 bg-access-zone/80 px-5 py-4"
+              role="status"
+              aria-live="polite"
+            >
+              <p className="text-lg uppercase tracking-[0.22em] text-access-accent/80">
                 Library Status
               </p>
               <p className="mt-2 text-lg leading-8 text-access-text">
@@ -359,8 +372,12 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="rounded-[1.5rem] border border-access-text/10 bg-access-zone/80 px-5 py-4">
-              <p className="text-xs uppercase tracking-[0.26em] text-access-accent/80">
+            <div
+              className="rounded-[1.5rem] border border-access-text/10 bg-access-zone/80 px-5 py-4"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <p className="text-lg uppercase tracking-[0.22em] text-access-accent/80">
                 Search
               </p>
               <p className="mt-2 text-lg leading-8 text-access-text">
@@ -371,7 +388,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <p className="mt-8 text-sm uppercase tracking-[0.28em] text-access-text/62">
+          <p className="mt-8 text-lg uppercase tracking-[0.22em] text-access-text/62">
             Press D to toggle the debug overlay.
           </p>
         </div>
@@ -390,13 +407,13 @@ export default function HomePage() {
         >
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <p className="text-sm uppercase tracking-[0.3em] text-access-highlight">
+              <p className="text-lg uppercase tracking-[0.26em] text-access-highlight">
                 Library
               </p>
               <h2 className="mt-3 text-3xl font-semibold text-access-text">
                 Choose a book
               </h2>
-              <p className="mt-2 max-w-2xl text-base leading-7 text-access-text/76">
+              <p className="mt-2 max-w-2xl text-lg leading-8 text-access-text/76">
                 Select one of the available public-domain titles to begin reading.
               </p>
             </div>
@@ -404,7 +421,7 @@ export default function HomePage() {
             <button
               type="button"
               aria-label="Close book list"
-              className="rounded-full border border-access-accent/35 px-5 text-sm font-medium text-access-text transition hover:border-access-accent hover:text-access-accent focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-access-highlight"
+              className="min-h-[44px] min-w-[44px] shrink-0 rounded-full border border-access-accent/35 px-5 text-lg font-medium text-access-text transition hover:border-access-accent hover:text-access-accent focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-access-highlight motion-reduce:transition-none"
               onClick={() => {
                 setViewState('DEFAULT');
               }}
@@ -437,13 +454,13 @@ export default function HomePage() {
                       handleBookSelect(book);
                     }}
                   >
-                    <p className="text-xs uppercase tracking-[0.28em] text-access-highlight">
+                    <p className="text-lg uppercase tracking-[0.22em] text-access-highlight">
                       {book.author}
                     </p>
                     <h3 className="mt-3 text-2xl font-semibold text-access-text">
                       {book.title}
                     </h3>
-                    <p className="mt-2 text-base leading-7 text-access-text/72">
+                    <p className="mt-2 text-lg leading-8 text-access-text/72">
                       {book.chapters[0]?.title ?? 'Opening chapter'}
                     </p>
                   </button>
