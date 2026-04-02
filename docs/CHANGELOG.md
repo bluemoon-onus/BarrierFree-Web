@@ -97,6 +97,20 @@ Format: Stage > Task > Agent > Status
   - `src/lib/voiceDictionary.ts`
 - **Next Task**: Task #5 — Keyboard reader hook (Codex)
 
+- **Status**: ✅ Task #5 Complete
+- **Agent**: Codex
+- **Date**: 2026-04-02
+- **Changes**:
+  - Implemented `src/hooks/useKeyboardReader.ts` for real-time typed character feedback
+  - Added high-priority TTS handling for printable keys, space, backspace, enter, and escape
+  - Added an internal state machine for idle, listening, processing, and typo-confirmation flows
+  - Added confirmation handling so Enter accepts a correction and Space retries input
+  - Added error recovery that returns the hook to listening mode after failed submission
+  - Verified with `npm run lint` and `npm run build`
+- **Files Created**:
+  - `src/hooks/useKeyboardReader.ts`
+- **Next Task**: Task #6 — Typo correction API route (Claude)
+
 ## [Stage 3: UI] — Pending
 ## [Stage 4: QA] — Pending
 ## [Stage 5: Deploy] — Pending
