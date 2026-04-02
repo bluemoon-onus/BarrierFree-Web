@@ -158,6 +158,22 @@ Format: Stage > Task > Agent > Status
   - `src/components/BookReader.tsx`
 - **Next Task**: Task #9 — Main page and zone overlay (Codex)
 
+- **Status**: ✅ Task #9 Complete
+- **Agent**: Codex
+- **Date**: 2026-04-02
+- **Changes**:
+  - Rebuilt `src/app/page.tsx` as the interactive main page with 5 visual navigation zones
+  - Integrated `useMouseZone`, `useTTS`, `voiceDictionary`, `TypingEditor`, and `BookReader` into a single page state flow
+  - Added zone enter and idle voice guidance, current-zone highlighting, and click handlers for back, forward, books, search, and home
+  - Added a book list overlay backed by `books.json` and wired selection into the existing reader flow
+  - Created `src/components/MouseZoneOverlay.tsx` with debug boundaries, labels, current mouse dot, and `D` key toggle support
+  - Verified with `npm run lint`, `npm run build`, and a local `npm run dev` smoke check serving `/`
+- **Files Created**:
+  - `src/components/MouseZoneOverlay.tsx`
+- **Files Modified**:
+  - `src/app/page.tsx`
+- **Next Task**: Task #10 — Onboarding voice guide (Codex)
+
 ## [Stage 3: UI] — Pending
 ## [Stage 4: QA] — Pending
 ## [Stage 5: Deploy] — Pending
