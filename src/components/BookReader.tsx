@@ -8,6 +8,8 @@ import { loadChapterContent } from '@/lib/bookParser';
 import voiceDictionary from '@/lib/voiceDictionary';
 
 const PARAGRAPH_DELAY_MS = 500;
+// Time threshold for Up-arrow "near start" detection (~3 words at normal speech rate)
+const NEAR_START_MS = 2200;
 
 export interface BookReaderProps {
   book: Book | null;
@@ -17,6 +19,7 @@ export interface BookReaderProps {
 }
 
 type LoadState = 'loading' | 'ready' | 'error';
+type ReaderState = 'idle' | 'reading' | 'paused';
 
 export function BookReader({
   book,
@@ -24,20 +27,25 @@ export function BookReader({
   onClose,
   onChapterChange,
 }: BookReaderProps) {
-  const { pause, resume, speak, stop } = useTTS();
+  const { speak, stop } = useTTS();
 
   const [paragraphs, setParagraphs] = useState<string[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [paragraphIndex, setParagraphIndex] = useState(0);
-  const [readerState, setReaderState] = useState<'idle' | 'reading' | 'paused'>('idle');
+  const [readerState, setReaderState] = useState<ReaderState>('idle');
   const [isReadyToRead, setIsReadyToRead] = useState(false);
+  // Incremented to force a restart of the current paragraph without changing index
+  const [restartTrigger, setRestartTrigger] = useState(0);
 
   const playbackTokenRef = useRef(0);
   const delayRef = useRef<number | null>(null);
-  const isPausedRef = useRef(false);
   const onCloseRef = useRef(onClose);
   const onChapterChangeRef = useRef(onChapterChange);
   const invalidatePlaybackRef = useRef<() => void>(() => {});
+  // Timestamp when current paragraph started speaking (for Up-arrow heuristic)
+  const paragraphStartTimeRef = useRef<number>(Date.now());
+  // Announce controls once per book session
+  const hasAnnouncedControlsRef = useRef(false);
 
   onCloseRef.current = onClose;
   onChapterChangeRef.current = onChapterChange;
@@ -47,17 +55,8 @@ export function BookReader({
     return book.chapters.find((ch) => ch.id === chapterId) ?? book.chapters[0] ?? null;
   }, [book, chapterId]);
 
-  const chapterIndex: number = useMemo(() => {
-    if (!book || !activeChapter) return 0;
-    return book.chapters.findIndex((ch) => ch.id === activeChapter.id);
-  }, [book, activeChapter]);
-
   const totalParagraphs = paragraphs.length;
   const currentParagraph = paragraphs[paragraphIndex] ?? '';
-
-  useEffect(() => {
-    isPausedRef.current = readerState === 'paused';
-  }, [readerState]);
 
   function clearDelay() {
     if (delayRef.current !== null) {
@@ -74,7 +73,7 @@ export function BookReader({
 
   invalidatePlaybackRef.current = invalidatePlayback;
 
-  // Load chapter content whenever the chapter changes
+  // ─── Load chapter on change ───────────────────────────────────────────────
   useEffect(() => {
     invalidatePlaybackRef.current();
 
@@ -93,6 +92,7 @@ export function BookReader({
     setIsReadyToRead(false);
     setParagraphIndex(0);
     setReaderState('idle');
+    setRestartTrigger(0);
 
     void (async () => {
       try {
@@ -107,17 +107,25 @@ export function BookReader({
 
         setParagraphs(loaded);
         setLoadState('ready');
-        setReaderState('reading');
 
-        const playbackToken = playbackTokenRef.current;
+        const token = playbackTokenRef.current;
 
+        // Announce chapter title
         await speak(
           voiceDictionary.reader.chapterStart(book.title, activeChapter.title),
           { priority: 'high' },
         );
 
-        if (cancelled || playbackToken !== playbackTokenRef.current) return;
+        if (cancelled || token !== playbackTokenRef.current) return;
 
+        // Announce controls once per session
+        if (!hasAnnouncedControlsRef.current) {
+          hasAnnouncedControlsRef.current = true;
+          await speak(voiceDictionary.reader.controlsGuide, { priority: 'normal' });
+          if (cancelled || token !== playbackTokenRef.current) return;
+        }
+
+        setReaderState('reading');
         setIsReadyToRead(true);
       } catch {
         if (!cancelled) {
@@ -134,21 +142,22 @@ export function BookReader({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [book, activeChapter]);
 
-  // Auto-advance paragraphs
+  // ─── Auto-advance paragraph playback ────────────────────────────────────
+  // Fires when: chapter loads, paragraph index changes, restart trigger fires,
+  // or reader state changes TO 'reading' (resume after pause).
   useEffect(() => {
-    if (!book || !activeChapter || !isReadyToRead || paragraphs.length === 0) {
-      return;
-    }
+    if (!book || !activeChapter || !isReadyToRead || paragraphs.length === 0) return;
+    if (readerState !== 'reading') return;
 
-    const playbackToken = playbackTokenRef.current;
+    const token = playbackTokenRef.current;
     let cancelled = false;
 
-    setReaderState((prev) => (prev === 'paused' ? prev : 'reading'));
+    paragraphStartTimeRef.current = Date.now();
 
     void (async () => {
       await speak(paragraphs[paragraphIndex] ?? '', { priority: 'high' });
 
-      if (cancelled || playbackToken !== playbackTokenRef.current) return;
+      if (cancelled || token !== playbackTokenRef.current) return;
 
       if (paragraphIndex >= paragraphs.length - 1) {
         void speak(voiceDictionary.reader.endOfChapter, { priority: 'normal' });
@@ -157,9 +166,7 @@ export function BookReader({
       }
 
       delayRef.current = window.setTimeout(() => {
-        if (playbackToken !== playbackTokenRef.current || isPausedRef.current) {
-          return;
-        }
+        if (token !== playbackTokenRef.current) return;
         setParagraphIndex((prev) => Math.min(prev + 1, paragraphs.length - 1));
       }, PARAGRAPH_DELAY_MS);
     })();
@@ -169,9 +176,9 @@ export function BookReader({
       clearDelay();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeChapter, book, isReadyToRead, paragraphIndex, paragraphs]);
+  }, [activeChapter, book, isReadyToRead, paragraphIndex, paragraphs, readerState, restartTrigger]);
 
-  // Keyboard controls
+  // ─── Keyboard controls ───────────────────────────────────────────────────
   useEffect(() => {
     if (!book) return;
 
@@ -179,88 +186,84 @@ export function BookReader({
       if (event.ctrlKey || event.metaKey || event.altKey) return;
 
       switch (event.key) {
+        // ── Space: pause / resume (stop+restart — works on both Chrome & Safari)
         case ' ': {
           event.preventDefault();
           if (readerState === 'paused') {
-            resume();
+            // Resume: restart speaking from current paragraph
             setReaderState('reading');
+            setRestartTrigger((t) => t + 1);
             void speak(voiceDictionary.reader.resumed, { priority: 'high' });
           } else if (readerState === 'reading') {
-            pause();
+            // Pause: cancel TTS (cross-browser safe)
+            invalidatePlaybackRef.current();
             setReaderState('paused');
             void speak(voiceDictionary.reader.paused, { priority: 'high' });
           }
           break;
         }
 
+        // ── Down arrow: next paragraph
+        case 'ArrowDown': {
+          if (totalParagraphs === 0) break;
+          event.preventDefault();
+          invalidatePlaybackRef.current();
+          void speak(voiceDictionary.reader.nextParagraph, { priority: 'high' });
+          setParagraphIndex((prev) => {
+            const next = Math.min(prev + 1, totalParagraphs - 1);
+            return next;
+          });
+          setReaderState('reading');
+          setIsReadyToRead(true);
+          break;
+        }
+
+        // ── Up arrow: restart current paragraph OR previous paragraph
+        // If within NEAR_START_MS of paragraph start → go to previous paragraph
+        // Otherwise → restart from beginning of current paragraph
+        case 'ArrowUp': {
+          if (totalParagraphs === 0) break;
+          event.preventDefault();
+          const elapsed = Date.now() - paragraphStartTimeRef.current;
+          const isNearStart = elapsed < NEAR_START_MS;
+          invalidatePlaybackRef.current();
+          setReaderState('reading');
+          setIsReadyToRead(true);
+          if (isNearStart && paragraphIndex > 0) {
+            void speak(voiceDictionary.reader.prevParagraph, { priority: 'high' });
+            setParagraphIndex((prev) => Math.max(prev - 1, 0));
+          } else {
+            // Restart current paragraph
+            setRestartTrigger((t) => t + 1);
+          }
+          break;
+        }
+
+        // ── Right arrow: next paragraph (alias for ↓)
         case 'ArrowRight': {
           if (totalParagraphs === 0) break;
           event.preventDefault();
           invalidatePlaybackRef.current();
-          setReaderState('reading');
-          setIsReadyToRead(true);
           void speak(voiceDictionary.reader.nextParagraph, { priority: 'high' });
           setParagraphIndex((prev) => Math.min(prev + 1, totalParagraphs - 1));
+          setReaderState('reading');
+          setIsReadyToRead(true);
           break;
         }
 
+        // ── Left arrow: previous paragraph (always, no time check)
         case 'ArrowLeft': {
           if (totalParagraphs === 0) break;
           event.preventDefault();
           invalidatePlaybackRef.current();
-          setReaderState('reading');
-          setIsReadyToRead(true);
           void speak(voiceDictionary.reader.prevParagraph, { priority: 'high' });
           setParagraphIndex((prev) => Math.max(prev - 1, 0));
+          setReaderState('reading');
+          setIsReadyToRead(true);
           break;
         }
 
-        case 'PageDown':
-        case 'n':
-        case 'N': {
-          event.preventDefault();
-          if (!book) break;
-          const nextChapter = book.chapters[chapterIndex + 1];
-          if (nextChapter) {
-            void speak(voiceDictionary.reader.nextChapter(nextChapter.title), {
-              priority: 'high',
-            });
-            onChapterChangeRef.current(nextChapter.id);
-          }
-          break;
-        }
-
-        case 'PageUp':
-        case 'p':
-        case 'P': {
-          event.preventDefault();
-          if (!book) break;
-          const prevChapter = book.chapters[chapterIndex - 1];
-          if (prevChapter) {
-            void speak(voiceDictionary.reader.prevChapter(prevChapter.title), {
-              priority: 'high',
-            });
-            onChapterChangeRef.current(prevChapter.id);
-          }
-          break;
-        }
-
-        case 'c':
-        case 'C': {
-          event.preventDefault();
-          if (!book) break;
-          // Cycle to next chapter (wraps around)
-          const nextIdx = (chapterIndex + 1) % book.chapters.length;
-          const target = book.chapters[nextIdx];
-          if (target) {
-            void speak(voiceDictionary.reader.nextChapter(target.title), {
-              priority: 'high',
-            });
-            onChapterChangeRef.current(target.id);
-          }
-          break;
-        }
-
+        // ── Escape: back to library
         case 'Escape': {
           event.preventDefault();
           invalidatePlaybackRef.current();
@@ -272,14 +275,10 @@ export function BookReader({
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [book, chapterIndex, pause, readerState, resume, totalParagraphs, speak]);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [book, paragraphIndex, readerState, totalParagraphs, speak]);
 
-  if (!book || !activeChapter) {
-    return null;
-  }
+  if (!book || !activeChapter) return null;
 
   return (
     <section
@@ -290,28 +289,24 @@ export function BookReader({
       {/* Top bar */}
       <div className="flex shrink-0 items-center justify-between gap-4 border-b border-access-accent/20 px-6 py-4">
         <div className="min-w-0">
-          <p
-            className="truncate text-lg font-semibold text-access-text"
-            aria-label={`Reading ${book.title}`}
-          >
+          <p className="truncate text-lg font-semibold text-access-text">
             {book.title}
           </p>
-          <p className="mt-1 text-lg text-access-text/60">
-            {activeChapter.title}
-          </p>
+          <p className="mt-1 text-lg text-access-text/60">{activeChapter.title}</p>
         </div>
         <div
           className="shrink-0 text-lg text-access-accent"
           aria-live="polite"
           aria-atomic="true"
         >
-          Para {Math.min(paragraphIndex + 1, Math.max(totalParagraphs, 1))} of{' '}
-          {Math.max(totalParagraphs, 1)}
+          {totalParagraphs > 0
+            ? `Para ${paragraphIndex + 1} of ${totalParagraphs}`
+            : ''}
         </div>
         <button
           type="button"
           aria-label="Close reader, return to library"
-          className="min-h-[44px] min-w-[44px] shrink-0 rounded-full border border-access-accent/40 px-5 text-lg font-medium text-access-text transition hover:border-access-accent hover:text-access-accent focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight"
+          className="min-h-[44px] min-w-[44px] shrink-0 rounded-full border border-access-accent/40 px-5 text-lg font-medium text-access-text transition hover:border-access-accent hover:text-access-accent focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight motion-reduce:transition-none"
           onClick={() => {
             invalidatePlaybackRef.current();
             void speak(voiceDictionary.reader.back, { priority: 'high' });
@@ -333,10 +328,7 @@ export function BookReader({
             Loading chapter...
           </p>
         ) : loadState === 'error' ? (
-          <p
-            className="text-2xl leading-relaxed text-red-400"
-            role="alert"
-          >
+          <p className="text-2xl leading-relaxed text-red-400" role="alert">
             Failed to load chapter. Press Escape to return to the library.
           </p>
         ) : (
@@ -359,29 +351,29 @@ export function BookReader({
           aria-atomic="true"
         >
           {readerState === 'paused'
-            ? voiceDictionary.reader.paused
+            ? 'Paused'
             : readerState === 'idle'
               ? 'End of chapter'
               : 'Reading'}
         </div>
         <div
           id="reader-keyboard-hints"
-          className="flex flex-wrap items-center justify-center gap-3 text-lg text-access-text/60"
+          className="flex flex-wrap items-center justify-center gap-3 text-lg text-access-text/50"
         >
           <span className="rounded-full border border-access-text/10 bg-access-zone px-4 py-2">
-            Space: Pause / Resume
+            Space — Pause / Resume
           </span>
           <span className="rounded-full border border-access-text/10 bg-access-zone px-4 py-2">
-            ← → : Paragraph
+            ↓ → — Next paragraph
           </span>
           <span className="rounded-full border border-access-text/10 bg-access-zone px-4 py-2">
-            N / P: Chapter
+            ↑ — Restart / Prev paragraph
           </span>
           <span className="rounded-full border border-access-text/10 bg-access-zone px-4 py-2">
-            C: Cycle chapter
+            ← — Prev paragraph
           </span>
           <span className="rounded-full border border-access-text/10 bg-access-zone px-4 py-2">
-            Esc: Library
+            Esc — Library
           </span>
         </div>
       </div>

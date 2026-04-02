@@ -232,26 +232,32 @@ export function getEnglishVoice() {
     return null;
   }
 
-  const preferredVoice = voices.find(
-    (voice) =>
-      normalizeLanguageTag(voice.lang) === normalizeLanguageTag(voicePreferences.lang),
+  const isEnglish = (v: SpeechSynthesisVoice) =>
+    normalizeLanguageTag(v.lang).startsWith("en");
+
+  const qualityTerms = ["premium", "enhanced", "neural", "natural", "siri"];
+  const isHighQuality = (v: SpeechSynthesisVoice) => {
+    const n = v.name.toLowerCase();
+    return qualityTerms.some((t) => n.includes(t));
+  };
+
+  // 1. Premium/Enhanced English voice (macOS Siri Neural, etc.)
+  const premiumEnUS = voices.find(
+    (v) => normalizeLanguageTag(v.lang) === "en-us" && isHighQuality(v),
   );
+  if (premiumEnUS) return premiumEnUS;
 
-  if (preferredVoice) {
-    return preferredVoice;
-  }
+  const premiumEn = voices.find((v) => isEnglish(v) && isHighQuality(v));
+  if (premiumEn) return premiumEn;
 
-  const exactEnglishVoice = voices.find(
-    (voice) => normalizeLanguageTag(voice.lang) === "en-us",
+  // 2. Exact en-US match
+  const enUS = voices.find(
+    (v) => normalizeLanguageTag(v.lang) === "en-us",
   );
+  if (enUS) return enUS;
 
-  if (exactEnglishVoice) {
-    return exactEnglishVoice;
-  }
-
-  return (
-    voices.find((voice) => normalizeLanguageTag(voice.lang).startsWith("en")) ?? null
-  );
+  // 3. Any English voice
+  return voices.find(isEnglish) ?? null;
 }
 
 export async function speak(text: string, options: SpeakOptions = {}) {

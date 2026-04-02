@@ -272,6 +272,13 @@ export default function HomePage() {
                           ? 'border-access-accent bg-access-zone shadow-[0_0_0_1px_rgba(255,215,0,0.3)]'
                           : 'border-access-text/10 bg-access-zone/60 hover:border-access-accent/50 hover:bg-access-zone',
                       ].join(' ')}
+                      onMouseEnter={() => {
+                        void speakRef.current(
+                          voiceDictionary.library.bookFocus(index + 1, book.title, book.author),
+                          { priority: 'high' },
+                        );
+                        setFocusedLibraryIndex(index);
+                      }}
                       onClick={() => {
                         setFocusedLibraryIndex(index);
                         openBook(book);
