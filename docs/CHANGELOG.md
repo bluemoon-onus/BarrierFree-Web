@@ -291,23 +291,101 @@ Format: Stage > Task > Agent > Status
 
 ---
 
+## [Post-v1.0: UI Redesign] — 2026-04-02
+- **Status**: ✅ Complete
+- **Agent**: Claude CLI
+- **Date**: 2026-04-02
+- **Changes**:
+
+  ### Book Indexing
+  - Created `scripts/index-books.mjs` — Node.js parser for Project Gutenberg `.txt` files
+  - Detects chapter boundaries via patterns: `CHAPTER N`, `Chapter N`, `ACT I`, `BOOK I`, standalone Roman numerals
+  - TOC vs body-content discrimination using consecutive-line-gap heuristic
+  - Strips trailing page numbers, bracket artifacts, and leading punctuation from titles
+  - Regenerated `public/books/books.json` from 9 real txt files (419 chapters total)
+  - New JSON schema: each chapter stores `lineStart`/`lineEnd` offsets; no content embedded in JSON
+
+  ### New Files
+  - `scripts/index-books.mjs` — book indexer script
+  - `src/lib/bookParser.ts` — client-side chapter loader: fetches `.txt` from `/public/books/`, slices by line range, splits into paragraphs
+  - `src/components/SettingsButton.tsx` — fixed bottom-right ⚙ button with ARIA dialog panel (replay guide, debug toggle)
+
+  ### Rewritten: `src/app/page.tsx`
+  - Replaced 5-zone mouse navigation with a clean 3-state machine: `WELCOME → LIBRARY → READING`
+  - **WELCOME**: full-screen centered layout; single "Get Started" button (min 64px tall, gold); TTS greeting on mount; Enter key triggers
+  - **LIBRARY**: numbered book list 1–9; number keys 1–9 for direct selection; ↑↓ arrow key navigation with TTS announcement per book; Enter to open; Escape to go back
+  - **READING**: delegates to `BookReader` component
+  - Removed: `MouseZoneOverlay`, `NavigationBar`, center info card (zone status, nearby guidance, library status cards)
+  - `SettingsButton` replaces `NavigationBar` for replay/settings access
+
+  ### Rewritten: `src/components/BookReader.tsx`
+  - Now accepts `chapterId: string` and `onChapterChange: (id: string) => void` props
+  - Loads chapter content lazily via `bookParser.loadChapterContent(filename, lineStart, lineEnd)`
+  - Shows "Loading chapter..." state with TTS during fetch
+  - Full keyboard controls for eyes-closed reading:
+    - `Space` — pause / resume TTS
+    - `← →` — previous / next paragraph
+    - `N` / `PageDown` — next chapter
+    - `P` / `PageUp` — previous chapter
+    - `C` — cycle through chapters (wraps around)
+    - `Escape` — back to library
+  - Playback token system prevents stale async callbacks across chapter changes
+
+  ### Updated: `src/lib/books.ts`
+  - `Chapter` type: replaced `paragraphs: string[]` with `lineStart: number`, `lineEnd: number`
+  - `Book` type: added `filename: string`, `chapterCount: number`
+
+  ### Updated: `src/lib/voiceDictionary.ts`
+  - Added `welcome` namespace: `greeting`, `getStarted`
+  - Added `library` namespace: `open(count)`, `bookFocus(num, title, author)`, `selected(title)`, `back`
+  - Added `reader` namespace: `chapterStart`, `paused`, `resumed`, `nextParagraph`, `prevParagraph`, `nextChapter`, `prevChapter`, `endOfChapter`, `loading`, `back`
+
+  ### 9 Books Added to Repository
+  | # | Title | Author | Chapters |
+  |---|-------|--------|----------|
+  | 1 | Frankenstein | Mary W. Shelley | 24 |
+  | 2 | Moby Dick | Herman Melville | 150 |
+  | 3 | Pride and Prejudice | Jane Austen | 61 |
+  | 4 | JFK Commission Report | Warren Commission | 30 |
+  | 5 | Romeo and Juliet | William Shakespeare | 10 |
+  | 6 | The City of God Vol. I | St. Augustine | 10 |
+  | 7 | The Great Gatsby | F. Scott Fitzgerald | 9 |
+  | 8 | The King in Yellow | Robert W. Chambers | 28 |
+  | 9 | The Origin and Development of the Moral Ideas | Edward Westermarck | 97 |
+
+- **Files Created**:
+  - `scripts/index-books.mjs`
+  - `src/lib/bookParser.ts`
+  - `src/components/SettingsButton.tsx`
+  - `public/books/*.txt` (9 books)
+- **Files Modified**:
+  - `public/books/books.json`
+  - `src/app/page.tsx`
+  - `src/components/BookReader.tsx`
+  - `src/lib/books.ts`
+  - `src/lib/voiceDictionary.ts`
+
+---
+
 ## 🎉 Project Complete — v1.0 Summary
 
-**BarrierFree-Web** is a fully accessible, AI-powered eBook reader built in ~1 day across 15 tasks by two agents (Codex + Claude CLI).
+**BarrierFree-Web** is a fully accessible, AI-powered eBook reader built in ~1 day across 15 tasks by two agents (Codex + Claude CLI), subsequently redesigned for a cleaner eyes-closed UX.
 
 ### What was built
 | Layer | Files | Description |
 |-------|-------|-------------|
 | TTS Engine | `speechUtils.ts`, `useTTS.ts` | Web Speech API wrapper with priority, chunking, voice selection |
-| Navigation | `useMouseZone.ts`, `page.tsx` | 5-zone viewport detection with idle guidance and visual overlay |
+| App Shell | `page.tsx` | 3-state machine: WELCOME → LIBRARY → READING |
+| Book Index | `books.json`, `scripts/index-books.mjs` | 9 real books, 419 chapters, on-demand txt loading |
+| Book Parser | `bookParser.ts` | Client-side chapter content fetcher from .txt files |
 | Keyboard | `useKeyboardReader.ts` | Real-time spoken keystroke input with 4-state machine |
 | AI Typo | `/api/typo-check`, `TypingEditor.tsx` | Claude Haiku correction with 5-state UI (Edge Runtime) |
-| Reader | `BookReader.tsx`, `books.json` | Sequential paragraph TTS with keyboard controls |
-| Onboarding | `Onboarding.tsx`, `NavigationBar.tsx` | First-visit TTS guide with replay support |
+| Reader | `BookReader.tsx` | Sequential paragraph TTS, full keyboard control |
 | Accessibility | `globals.css`, all components | WCAG AAA: skip link, focus-visible, aria-live, 44px targets, 18px+ text |
+| Settings | `SettingsButton.tsx` | Fixed corner gear button with replay/settings panel |
 | QA | `qa-test-plan.md`, `qa-e2e-report.md` | 90+ test scenarios; API validation confirmed live |
 | Deploy | `vercel.json`, `README.md`, `DEPLOYMENT.md` | Vercel-ready with Edge Function support |
 
 ### Agents
 - **Codex**: Tasks #1–3, #5, #7–10, #14 (scaffolding, hooks, components, deployment config)
-- **Claude CLI**: Tasks #4, #6, #11–13, #15 (voice dictionary, API route, accessibility, QA, docs)
+- **Claude CLI**: Tasks #4, #6, #11–15, UI redesign (voice dictionary, API route, accessibility, QA, docs, book indexing)
