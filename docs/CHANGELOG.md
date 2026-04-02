@@ -219,4 +219,23 @@ Format: Stage > Task > Agent > Status
 - **Next Task**: Task #12 — QA test plan (Claude CLI)
 
 ## [Stage 4: QA] — Pending
+- **Status**: ✅ Task #12 Complete
+- **Agent**: Claude CLI
+- **Date**: 2026-04-02
+- **Changes**:
+  - Created `docs/qa-test-plan.md` with 90+ test scenarios across 8 sections
+  - Section A: TTS Engine Tests (9 tests) — voice synthesis, language selection, chunking, priority
+  - Section B: Mouse Zone Tests (12 tests) — all 5 zones, idle detection, highlighting, click handlers
+  - Section C: Keyboard Reader Tests (8 tests) — character input, backspace, enter, escape, confirming state
+  - Section D: Typo Correction API Tests (9 tests) — valid/invalid input, error handling, timeout
+  - Section E: TypingEditor UI Tests (9 tests) — all 5 states, aria-live, cursor animation
+  - Section F: Book Reader Tests (9 tests) — sequential reading, playback controls, progress counter
+  - Section G: Onboarding Tests (8 tests) — first visit, TTS sequence, dismiss, localStorage, replay
+  - Section H: Accessibility & Layout Tests (12 tests) — Tab nav, ARIA roles, fonts, touch targets, 1024px
+  - Added severity levels (Critical/High/Medium/Low), preconditions, and expected results per test
+  - Added "How to Run", "Known Limitations", and run result template sections
+- **Files Created**:
+  - `docs/qa-test-plan.md`
+- **Next Task**: Task #13 — QA E2E typo correction flow (Claude CLI)
+
 ## [Stage 5: Deploy] — Pending
