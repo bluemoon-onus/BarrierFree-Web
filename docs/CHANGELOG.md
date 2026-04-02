@@ -111,6 +111,20 @@ Format: Stage > Task > Agent > Status
   - `src/hooks/useKeyboardReader.ts`
 - **Next Task**: Task #6 — Typo correction API route (Claude)
 
+- **Status**: ✅ Task #6 Complete
+- **Agent**: Claude CLI
+- **Date**: 2026-04-02
+- **Changes**:
+  - Implemented `src/app/api/typo-check/route.ts` with Vercel Edge Runtime
+  - Added input validation (non-empty, max 500 chars) with 400 error responses
+  - Integrated Anthropic SDK calling `claude-haiku-4-5-20251001` at temperature 0
+  - Added JSON extraction with markdown fence stripping before `JSON.parse()`
+  - Added 5-second AbortController timeout with graceful error fallback
+  - Verified with `npm run lint` and `npm run build`
+- **Files Modified**:
+  - `src/app/api/typo-check/route.ts`
+- **Next Task**: Task #7 — Typing Editor UI component (Codex)
+
 ## [Stage 3: UI] — Pending
 ## [Stage 4: QA] — Pending
 ## [Stage 5: Deploy] — Pending
