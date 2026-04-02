@@ -1,362 +1,168 @@
 export interface SpeakOptions {
-  rate?: number;
-  pitch?: number;
-  volume?: number;
-  priority?: "high" | "normal";
+  priority?: 'high' | 'normal';
+  /** Override voice for this call (default: configured voice preference) */
+  voice?: string;
+  /** Override model for this call (default: configured model preference) */
+  model?: string;
 }
 
 export interface VoicePreferences {
-  lang: string;
-  rate: number;
-  pitch: number;
+  voice: string;
+  model: string;
 }
 
-type SpeechBatch = {
-  remaining: number;
-  resolve: () => void;
-  settled: boolean;
-};
+export const TTS_STATE_EVENT = 'barrierfree-web:tts-state-change';
+export const TTS_BLOCKED_EVENT = 'barrierfree-web:tts-blocked';
 
-const DEFAULT_VOICE_PREFERENCES: VoicePreferences = {
-  lang: "en-US",
-  rate: 1,
-  pitch: 1,
-};
+const DEFAULT_PREFERENCES: VoicePreferences = { voice: 'nova', model: 'tts-1' };
 
-const TTS_STATE_EVENT = "barrierfree-web:tts-state-change";
-export const TTS_BLOCKED_EVENT = "barrierfree-web:tts-blocked";
-const VOICE_LOAD_TIMEOUT_MS = 1200;
+let prefs: VoicePreferences = { ...DEFAULT_PREFERENCES };
 
-let voicePreferences = { ...DEFAULT_VOICE_PREFERENCES };
-let initPromise: Promise<void> | null = null;
-let voicesListenerRegistered = false;
-const activeBatches = new Set<SpeechBatch>();
+// In-memory cache: short phrases like "Next." "Paused." are reused constantly.
+// Only texts under 200 chars are cached to avoid large book-sentence blobs piling up.
+const blobCache = new Map<string, Blob>();
 
-function getSpeechSynthesisInstance(): SpeechSynthesis | null {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-    return null;
+let currentAudio: HTMLAudioElement | null = null;
+let currentAbort: AbortController | null = null;
+let pendingResolve: (() => void) | null = null;
+
+function emit(eventName: string) {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(eventName));
   }
-
-  return window.speechSynthesis;
 }
 
-function emitSpeechStateChange() {
-  if (typeof window === "undefined") {
-    return;
+function cancelCurrent() {
+  currentAbort?.abort();
+  currentAbort = null;
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.src = '';
+    currentAudio = null;
   }
-
-  window.dispatchEvent(new CustomEvent(TTS_STATE_EVENT));
-}
-
-function normalizeLanguageTag(lang: string) {
-  return lang.replace("_", "-").toLowerCase();
-}
-
-function ensureVoicesListener() {
-  const synthesis = getSpeechSynthesisInstance();
-
-  if (!synthesis || voicesListenerRegistered) {
-    return;
+  if (pendingResolve) {
+    pendingResolve();
+    pendingResolve = null;
   }
+  emit(TTS_STATE_EVENT);
+}
 
-  synthesis.addEventListener("voiceschanged", () => {
-    emitSpeechStateChange();
+async function fetchAudioBlob(
+  text: string,
+  voice: string,
+  model: string,
+  signal: AbortSignal,
+): Promise<Blob> {
+  const cacheKey = `${voice}|${model}|${text}`;
+  const cached = blobCache.get(cacheKey);
+  if (cached) return cached;
+
+  const response = await fetch('/api/tts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, voice, model }),
+    signal,
   });
-  voicesListenerRegistered = true;
-}
 
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max);
-}
-
-function splitIntoUtteranceChunks(text: string) {
-  const normalizedText = text.trim();
-
-  if (!normalizedText) {
-    return [];
+  if (!response.ok) {
+    throw new Error(`TTS API ${response.status}`);
   }
 
-  if (normalizedText.length <= 100) {
-    return [normalizedText];
+  const blob = await response.blob();
+
+  // Cache only short texts (UI cues) — long book sentences would bloat memory
+  if (text.length < 200) {
+    blobCache.set(cacheKey, blob);
   }
 
-  const sentences = normalizedText
-    .split(/\.\s+/)
-    .map((sentence) => sentence.trim())
-    .filter(Boolean)
-    .map((sentence, index, allSentences) => {
-      const isLastSentence = index === allSentences.length - 1;
-      const endsWithPeriod = sentence.endsWith(".");
-
-      if (endsWithPeriod || (isLastSentence && !normalizedText.endsWith("."))) {
-        return sentence;
-      }
-
-      return `${sentence}.`;
-    });
-
-  return sentences.length > 0 ? sentences : [normalizedText];
-}
-
-function resolveBatch(batch: SpeechBatch) {
-  if (batch.settled) {
-    return;
-  }
-
-  batch.settled = true;
-  activeBatches.delete(batch);
-  batch.resolve();
-}
-
-function clearActiveBatches() {
-  activeBatches.forEach((batch) => {
-    resolveBatch(batch);
-  });
-}
-
-function registerBatch(utterances: SpeechSynthesisUtterance[]) {
-  if (utterances.length === 0) {
-    return Promise.resolve();
-  }
-
-  return new Promise<void>((resolve) => {
-    const batch: SpeechBatch = {
-      remaining: utterances.length,
-      resolve,
-      settled: false,
-    };
-
-    activeBatches.add(batch);
-
-    const markUtteranceComplete = () => {
-      if (batch.settled) {
-        return;
-      }
-
-      batch.remaining -= 1;
-
-      if (batch.remaining <= 0) {
-        resolveBatch(batch);
-      }
-
-      emitSpeechStateChange();
-    };
-
-    utterances.forEach((utterance) => {
-      utterance.onstart = () => {
-        emitSpeechStateChange();
-      };
-      utterance.onend = markUtteranceComplete;
-      utterance.onerror = (ev) => {
-        // Detect Chrome autoplay block ("not-allowed") and notify page-level listeners
-        if ((ev as SpeechSynthesisErrorEvent).error === "not-allowed") {
-          if (typeof window !== "undefined") {
-            window.dispatchEvent(new CustomEvent(TTS_BLOCKED_EVENT));
-          }
-        }
-        markUtteranceComplete();
-      };
-    });
-  });
-}
-
-function createUtterances(text: string, options: SpeakOptions) {
-  const chunks = splitIntoUtteranceChunks(text);
-  const voice = getEnglishVoice();
-  const rate = clamp(options.rate ?? voicePreferences.rate, 0.1, 10);
-  const pitch = clamp(options.pitch ?? voicePreferences.pitch, 0, 2);
-  const volume = clamp(options.volume ?? 1, 0, 1);
-
-  return chunks.map((chunk) => {
-    const utterance = new SpeechSynthesisUtterance(chunk);
-    utterance.lang = voice?.lang ?? voicePreferences.lang;
-    utterance.rate = rate;
-    utterance.pitch = pitch;
-    utterance.volume = volume;
-
-    if (voice) {
-      utterance.voice = voice;
-    }
-
-    return utterance;
-  });
-}
-
-export function setVoicePreferences(preferences: VoicePreferences) {
-  voicePreferences = {
-    lang: preferences.lang,
-    rate: clamp(preferences.rate, 0.1, 10),
-    pitch: clamp(preferences.pitch, 0, 2),
-  };
-}
-
-export async function initTTS() {
-  const synthesis = getSpeechSynthesisInstance();
-
-  if (!synthesis) {
-    return;
-  }
-
-  ensureVoicesListener();
-
-  const voices = synthesis.getVoices();
-
-  if (voices.length > 0) {
-    return;
-  }
-
-  if (!initPromise) {
-    initPromise = new Promise<void>((resolve) => {
-      let isSettled = false;
-
-      const resolveOnce = () => {
-        if (isSettled) {
-          return;
-        }
-
-        isSettled = true;
-        synthesis.removeEventListener("voiceschanged", handleVoicesChanged);
-        window.clearTimeout(timeoutId);
-        resolve();
-      };
-
-      const handleVoicesChanged = () => {
-        if (synthesis.getVoices().length === 0) {
-          return;
-        }
-
-        resolveOnce();
-      };
-
-      synthesis.addEventListener("voiceschanged", handleVoicesChanged);
-      const timeoutId = window.setTimeout(resolveOnce, VOICE_LOAD_TIMEOUT_MS);
-    });
-  }
-
-  await initPromise;
-}
-
-export function getAvailableVoices() {
-  const synthesis = getSpeechSynthesisInstance();
-
-  if (!synthesis) {
-    return [];
-  }
-
-  ensureVoicesListener();
-
-  return synthesis.getVoices();
-}
-
-export function getEnglishVoice() {
-  const voices = getAvailableVoices();
-
-  if (voices.length === 0) {
-    return null;
-  }
-
-  const isEnglish = (v: SpeechSynthesisVoice) =>
-    normalizeLanguageTag(v.lang).startsWith("en");
-
-  const qualityTerms = ["premium", "enhanced", "neural", "natural", "siri"];
-  const isHighQuality = (v: SpeechSynthesisVoice) => {
-    const n = v.name.toLowerCase();
-    return qualityTerms.some((t) => n.includes(t));
-  };
-
-  // 1. Premium/Enhanced English voice (macOS Siri Neural, etc.)
-  const premiumEnUS = voices.find(
-    (v) => normalizeLanguageTag(v.lang) === "en-us" && isHighQuality(v),
-  );
-  if (premiumEnUS) return premiumEnUS;
-
-  const premiumEn = voices.find((v) => isEnglish(v) && isHighQuality(v));
-  if (premiumEn) return premiumEn;
-
-  // 2. Exact en-US match
-  const enUS = voices.find(
-    (v) => normalizeLanguageTag(v.lang) === "en-us",
-  );
-  if (enUS) return enUS;
-
-  // 3. Any English voice
-  return voices.find(isEnglish) ?? null;
+  return blob;
 }
 
 export async function speak(text: string, options: SpeakOptions = {}) {
-  const synthesis = getSpeechSynthesisInstance();
+  if (typeof window === 'undefined') return;
   const normalizedText = text.trim();
+  if (!normalizedText) return;
 
-  if (!synthesis || !normalizedText) {
-    return;
+  if (options.priority === 'high') {
+    cancelCurrent();
   }
 
-  ensureVoicesListener();
+  const controller = new AbortController();
+  currentAbort = controller;
+  emit(TTS_STATE_EVENT);
 
-  if (options.priority === "high") {
-    clearActiveBatches();
-    synthesis.cancel();
+  const voice = options.voice ?? prefs.voice;
+  const model = options.model ?? prefs.model;
+
+  try {
+    const blob = await fetchAudioBlob(normalizedText, voice, model, controller.signal);
+
+    if (controller.signal.aborted) return;
+
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    currentAudio = audio;
+    emit(TTS_STATE_EVENT);
+
+    await new Promise<void>((resolve) => {
+      pendingResolve = resolve;
+
+      const done = () => {
+        URL.revokeObjectURL(url);
+        if (currentAudio === audio) currentAudio = null;
+        if (pendingResolve === resolve) pendingResolve = null;
+        emit(TTS_STATE_EVENT);
+        resolve();
+      };
+
+      audio.onended = done;
+      audio.onerror = done;
+
+      audio.play().catch((err: Error) => {
+        if (err.name === 'NotAllowedError') {
+          // Browser blocked autoplay — notify WELCOME screen to retry on interaction
+          emit(TTS_BLOCKED_EVENT);
+        }
+        done();
+      });
+    });
+  } catch (err) {
+    if (err instanceof Error && err.name !== 'AbortError') {
+      console.error('[TTS]', err.message);
+    }
+  } finally {
+    if (currentAbort === controller) currentAbort = null;
+    emit(TTS_STATE_EVENT);
   }
-
-  // Do NOT await initTTS() here — any await before synthesis.speak() breaks Chrome's
-  // user-gesture activation chain, causing silent audio blocks.
-  // createUtterances gracefully handles missing voices (falls back to browser default).
-  // If voices haven't loaded yet, they will be available on the next speak() call.
-  if (synthesis.getVoices().length === 0) {
-    void initTTS(); // fire-and-forget pre-warm; don't await
-  }
-
-  const utterances = createUtterances(normalizedText, options);
-  const batchPromise = registerBatch(utterances);
-
-  utterances.forEach((utterance) => {
-    synthesis.speak(utterance);
-  });
-
-  emitSpeechStateChange();
-  await batchPromise;
 }
 
 export function stopSpeaking() {
-  const synthesis = getSpeechSynthesisInstance();
-
-  if (!synthesis) {
-    return;
-  }
-
-  clearActiveBatches();
-  synthesis.cancel();
-  emitSpeechStateChange();
+  cancelCurrent();
 }
 
 export function pauseSpeaking() {
-  const synthesis = getSpeechSynthesisInstance();
-
-  if (!synthesis) {
-    return;
-  }
-
-  synthesis.pause();
-  emitSpeechStateChange();
+  currentAudio?.pause();
+  emit(TTS_STATE_EVENT);
 }
 
 export function resumeSpeaking() {
-  const synthesis = getSpeechSynthesisInstance();
-
-  if (!synthesis) {
-    return;
-  }
-
-  synthesis.resume();
-  emitSpeechStateChange();
+  void currentAudio?.play().catch(() => {});
+  emit(TTS_STATE_EVENT);
 }
 
 export function isSpeaking() {
-  const synthesis = getSpeechSynthesisInstance();
-
-  if (!synthesis) {
-    return false;
-  }
-
-  return synthesis.speaking || synthesis.pending || synthesis.paused;
+  return !!currentAudio && !currentAudio.paused && !currentAudio.ended;
 }
+
+export function setVoicePreferences(newPrefs: Partial<VoicePreferences>) {
+  prefs = { ...prefs, ...newPrefs };
+}
+
+export function getVoicePreferences(): VoicePreferences {
+  return { ...prefs };
+}
+
+// Legacy stubs kept for compatibility — no-op with OpenAI TTS
+export async function initTTS() {}
+export function getAvailableVoices() { return []; }
+export function getEnglishVoice() { return null; }
