@@ -275,3 +275,39 @@ Format: Stage > Task > Agent > Status
 - **Files Modified**:
   - `.gitignore`
 - **Next Task**: Task #15 — Final docs wrap-up (Claude CLI)
+
+- **Status**: ✅ Task #15 Complete
+- **Agent**: Claude CLI
+- **Date**: 2026-04-02
+- **Changes**:
+  - Updated `docs/ROADMAP.md`: marked all 6 stages complete, updated task table with ✅ status, added v1.1 roadmap section (Korean TTS, Supabase settings, voice speed/pitch UI, mobile support, more eBooks, multi-voice selection)
+  - Created `docs/DEPLOYMENT.md`: environment variables table, first-deploy steps, Vercel project settings, Edge Function notes, monitoring guide, browser compatibility table
+  - Reviewed `README.md` — complete and accurate (no changes needed)
+  - Verified `npm run build` passes (lint ✅, build ✅)
+- **Files Created**:
+  - `docs/DEPLOYMENT.md`
+- **Files Modified**:
+  - `docs/ROADMAP.md`
+
+---
+
+## 🎉 Project Complete — v1.0 Summary
+
+**BarrierFree-Web** is a fully accessible, AI-powered eBook reader built in ~1 day across 15 tasks by two agents (Codex + Claude CLI).
+
+### What was built
+| Layer | Files | Description |
+|-------|-------|-------------|
+| TTS Engine | `speechUtils.ts`, `useTTS.ts` | Web Speech API wrapper with priority, chunking, voice selection |
+| Navigation | `useMouseZone.ts`, `page.tsx` | 5-zone viewport detection with idle guidance and visual overlay |
+| Keyboard | `useKeyboardReader.ts` | Real-time spoken keystroke input with 4-state machine |
+| AI Typo | `/api/typo-check`, `TypingEditor.tsx` | Claude Haiku correction with 5-state UI (Edge Runtime) |
+| Reader | `BookReader.tsx`, `books.json` | Sequential paragraph TTS with keyboard controls |
+| Onboarding | `Onboarding.tsx`, `NavigationBar.tsx` | First-visit TTS guide with replay support |
+| Accessibility | `globals.css`, all components | WCAG AAA: skip link, focus-visible, aria-live, 44px targets, 18px+ text |
+| QA | `qa-test-plan.md`, `qa-e2e-report.md` | 90+ test scenarios; API validation confirmed live |
+| Deploy | `vercel.json`, `README.md`, `DEPLOYMENT.md` | Vercel-ready with Edge Function support |
+
+### Agents
+- **Codex**: Tasks #1–3, #5, #7–10, #14 (scaffolding, hooks, components, deployment config)
+- **Claude CLI**: Tasks #4, #6, #11–13, #15 (voice dictionary, API route, accessibility, QA, docs)
