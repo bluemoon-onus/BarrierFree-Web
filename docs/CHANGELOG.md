@@ -258,3 +258,20 @@ Format: Stage > Task > Agent > Status
 - **Next Task**: Task #14 — Vercel deployment setup (Codex)
 
 ## [Stage 5: Deploy] — Pending
+- **Status**: ✅ Task #14 Complete
+- **Agent**: Codex
+- **Date**: 2026-04-02
+- **Changes**:
+  - Added `vercel.json` for Next.js deployment configuration
+  - Added `.env.example` with the required `ANTHROPIC_API_KEY` placeholder
+  - Updated `.gitignore` to explicitly ignore `.env` and `.env.local`
+  - Created `README.md` with project overview, setup, deployment, browser, feature, and architecture guidance
+  - Reviewed `next.config.js` and kept the existing configuration because it is already valid for Vercel deployment
+  - Verified with `npm run lint` and `npm run build`
+- **Files Created**:
+  - `vercel.json`
+  - `.env.example`
+  - `README.md`
+- **Files Modified**:
+  - `.gitignore`
+- **Next Task**: Task #15 — Final docs wrap-up (Claude CLI)
