@@ -142,6 +142,22 @@ Format: Stage > Task > Agent > Status
   - `src/lib/voiceDictionary.ts`
 - **Next Task**: Task #8 — eBook reader component (Codex)
 
+- **Status**: ✅ Task #8 Complete
+- **Agent**: Codex
+- **Date**: 2026-04-02
+- **Changes**:
+  - Added `public/books/books.json` with 3 public-domain titles and accessible reading excerpts
+  - Implemented `src/lib/books.ts` with `loadBooks()` and `getBook()` helpers
+  - Implemented `src/components/BookReader.tsx` with sequential paragraph reading and high-contrast UI
+  - Added keyboard controls for pause/resume, previous paragraph, next paragraph, and close
+  - Added a 500ms delay between paragraphs and mount-time announcement for the selected book
+  - Fixed lint/build issues in the reader implementation and verified with `npm run lint` and `npm run build`
+- **Files Created**:
+  - `public/books/books.json`
+  - `src/lib/books.ts`
+  - `src/components/BookReader.tsx`
+- **Next Task**: Task #9 — Main page and zone overlay (Codex)
+
 ## [Stage 3: UI] — Pending
 ## [Stage 4: QA] — Pending
 ## [Stage 5: Deploy] — Pending
