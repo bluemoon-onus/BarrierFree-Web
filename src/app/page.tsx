@@ -6,7 +6,7 @@ import { BookReader } from '@/components/BookReader';
 import { SettingsButton } from '@/components/SettingsButton';
 import { type Book, loadBooks } from '@/lib/books';
 import { useTTS } from '@/hooks/useTTS';
-import { TTS_BLOCKED_EVENT } from '@/lib/speechUtils';
+import { TTS_BLOCKED_EVENT, prewarm } from '@/lib/speechUtils';
 import voiceDictionary from '@/lib/voiceDictionary';
 
 type AppState = 'WELCOME' | 'LIBRARY' | 'READING';
@@ -39,6 +39,12 @@ export default function HomePage() {
         setBooksLoaded(true);
       });
   }, []);
+
+  // WELCOME: pre-warm greeting audio in background so it plays instantly
+  useEffect(() => {
+    if (appState !== 'WELCOME') return;
+    void prewarm([voiceDictionary.welcome.greeting, voiceDictionary.welcome.getStarted]);
+  }, [appState]);
 
   // WELCOME: focus button + speak greeting.
   // Safari speaks immediately. Chrome requires a user gesture — we detect the
@@ -83,20 +89,29 @@ export default function HomePage() {
     };
   }, [appState]);
 
-  // LIBRARY: speak announcement once when state becomes LIBRARY and books are loaded
+  // LIBRARY: speak announcement + pre-warm all book title audio
   useEffect(() => {
     if (appState !== 'LIBRARY') {
       hasAnnouncedLibraryRef.current = false;
       return;
     }
-    if (!booksLoaded || hasAnnouncedLibraryRef.current) return;
+    if (!booksLoaded) return;
 
+    // Pre-warm book-specific phrases so arrow/hover is instant
+    void prewarm([
+      voiceDictionary.library.open(books.length),
+      voiceDictionary.library.back,
+      ...books.map((b, i) => voiceDictionary.library.bookFocus(i + 1, b.title, b.author)),
+      ...books.map((b) => voiceDictionary.library.selected(b.title)),
+    ]);
+
+    if (hasAnnouncedLibraryRef.current) return;
     hasAnnouncedLibraryRef.current = true;
     setFocusedLibraryIndex(0);
     void speakRef.current(voiceDictionary.library.open(books.length), {
       priority: 'high',
     });
-  }, [appState, books.length, booksLoaded]);
+  }, [appState, books, booksLoaded]);
 
   // WELCOME keyboard: Enter → Get Started
   useEffect(() => {
