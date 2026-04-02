@@ -367,6 +367,22 @@ Format: Stage > Task > Agent > Status
 
 ---
 
+## [Post-v1.0: Browser Compatibility Hardening] — 2026-04-02
+- **Status**: ✅ Complete
+- **Agent**: Codex
+- **Date**: 2026-04-02
+- **Changes**:
+  - Updated `src/lib/speechUtils.ts` so first speech waits for voice initialization with a timeout fallback instead of hanging on empty `getVoices()` results
+  - Ensured `speak()` cancels high-priority speech immediately, then completes voice initialization before building utterances
+  - Updated `src/app/page.tsx` so the welcome greeting is triggered by the actual Get Started user action instead of programmatic focus
+  - Delayed the library announcement until books finish loading so the first spoken count is accurate across browsers
+  - Verified with `npm run lint`, `npm run build`, and `npm run dev` startup
+- **Files Modified**:
+  - `src/lib/speechUtils.ts`
+  - `src/app/page.tsx`
+
+---
+
 ## 🎉 Project Complete — v1.0 Summary
 
 **BarrierFree-Web** is a fully accessible, AI-powered eBook reader built in ~1 day across 15 tasks by two agents (Codex + Claude CLI), subsequently redesigned for a cleaner eyes-closed UX.

@@ -24,6 +24,7 @@ const DEFAULT_VOICE_PREFERENCES: VoicePreferences = {
 };
 
 const TTS_STATE_EVENT = "barrierfree-web:tts-state-change";
+const VOICE_LOAD_TIMEOUT_MS = 1200;
 
 let voicePreferences = { ...DEFAULT_VOICE_PREFERENCES };
 let initPromise: Promise<void> | null = null;
@@ -197,16 +198,29 @@ export async function initTTS() {
 
   if (!initPromise) {
     initPromise = new Promise<void>((resolve) => {
+      let isSettled = false;
+
+      const resolveOnce = () => {
+        if (isSettled) {
+          return;
+        }
+
+        isSettled = true;
+        synthesis.removeEventListener("voiceschanged", handleVoicesChanged);
+        window.clearTimeout(timeoutId);
+        resolve();
+      };
+
       const handleVoicesChanged = () => {
         if (synthesis.getVoices().length === 0) {
           return;
         }
 
-        synthesis.removeEventListener("voiceschanged", handleVoicesChanged);
-        resolve();
+        resolveOnce();
       };
 
       synthesis.addEventListener("voiceschanged", handleVoicesChanged);
+      const timeoutId = window.setTimeout(resolveOnce, VOICE_LOAD_TIMEOUT_MS);
     });
   }
 
@@ -274,6 +288,8 @@ export async function speak(text: string, options: SpeakOptions = {}) {
     clearActiveBatches();
     synthesis.cancel();
   }
+
+  await initTTS();
 
   const utterances = createUtterances(normalizedText, options);
   const batchPromise = registerBatch(utterances);

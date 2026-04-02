@@ -24,6 +24,7 @@ export default function HomePage() {
   const libraryListRef = useRef<HTMLOListElement | null>(null);
   const hasAnnouncedWelcomeRef = useRef(false);
   const hasAnnouncedLibraryRef = useRef(false);
+  const isOpeningLibraryRef = useRef(false);
   const speakRef = useRef(speak);
 
   speakRef.current = speak;
@@ -50,21 +51,22 @@ export default function HomePage() {
     return () => window.clearTimeout(id);
   }, [appState]);
 
-  // LIBRARY: speak announcement once when state becomes LIBRARY
+  // LIBRARY: speak announcement once when state becomes LIBRARY and books are loaded
   useEffect(() => {
     if (appState !== 'LIBRARY') {
       hasAnnouncedLibraryRef.current = false;
-      // Reset welcome announcement so greeting replays when returning to WELCOME
-      if (appState === 'WELCOME') hasAnnouncedWelcomeRef.current = false;
       return;
     }
+
+    if (!booksLoaded) return;
     if (hasAnnouncedLibraryRef.current) return;
+
     hasAnnouncedLibraryRef.current = true;
     setFocusedLibraryIndex(0);
     void speakRef.current(voiceDictionary.library.open(books.length), {
       priority: 'high',
     });
-  }, [appState, books.length]);
+  }, [appState, books.length, booksLoaded]);
 
   // WELCOME keyboard: Enter → Get Started
   useEffect(() => {
@@ -176,9 +178,25 @@ export default function HomePage() {
     target?.focus();
   }, [appState, focusedLibraryIndex]);
 
-  const openLibrary = useCallback(() => {
-    void speakRef.current(voiceDictionary.welcome.getStarted, { priority: 'high' });
-    setAppState('LIBRARY');
+  const openLibrary = useCallback(async () => {
+    if (isOpeningLibraryRef.current) {
+      return;
+    }
+
+    isOpeningLibraryRef.current = true;
+
+    try {
+      if (!hasAnnouncedWelcomeRef.current) {
+        hasAnnouncedWelcomeRef.current = true;
+        await speakRef.current(voiceDictionary.welcome.greeting, {
+          priority: 'high',
+        });
+      }
+
+      setAppState('LIBRARY');
+    } finally {
+      isOpeningLibraryRef.current = false;
+    }
   }, []);
 
   function openBook(book: Book) {
@@ -235,13 +253,9 @@ export default function HomePage() {
             type="button"
             aria-label="Get started, open book library"
             className="mt-12 min-h-[64px] min-w-[280px] rounded-2xl bg-access-accent text-2xl font-semibold text-access-bg transition hover:bg-access-accent/90 focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight"
-            onFocus={() => {
-              if (!hasAnnouncedWelcomeRef.current) {
-                hasAnnouncedWelcomeRef.current = true;
-                void speakRef.current(voiceDictionary.welcome.greeting, { priority: 'high' });
-              }
+            onClick={() => {
+              void openLibrary();
             }}
-            onClick={openLibrary}
           >
             Get Started
           </button>
