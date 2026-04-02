@@ -405,3 +405,65 @@ Format: Stage > Task > Agent > Status
 ### Agents
 - **Codex**: Tasks #1–3, #5, #7–10, #14 (scaffolding, hooks, components, deployment config)
 - **Claude CLI**: Tasks #4, #6, #11–15, UI redesign (voice dictionary, API route, accessibility, QA, docs, book indexing)
+
+---
+
+## [Post-v1.0: Audio Generation & Beta Limiting] — 2026-04-02
+- **Status**: ✅ Complete
+- **Agent**: Codex & Claude CLI
+- **Date**: 2026-04-02
+- **Changes**:
+
+  ### Beta Limit Wall in BookReader
+  - Added chapter 3+ detection: chapters >= "ch3" show "End of Beta Service" fullscreen UI
+  - Triggered automatic voice announcement (`voiceDictionary.betaEnd`) on reach
+  - User cannot navigate past chapter 2
+
+  ### Sentence Splitting Algorithm
+  - Updated `bookParser.ts` to split paragraphs into sentences with period-based detection
+  - Added abbreviation heuristic for "Mr.", "Dr.", "Mrs.", "Ms." to avoid false splits
+  - Double newline treated as paragraph boundary (preserved in chapter load)
+  - Embedded newlines within paragraphs normalized to spaces
+
+  ### Audio Pre-Generation Pipeline
+  - Created `scripts/generate-audio.mjs` — Node.js script that:
+    - Loads all books from `public/books/books.json`
+    - For each book, fetches chapter 1 and chapter 2
+    - Splits content into sentences (first 3000 chars max)
+    - Calls Web Speech API or external TTS to generate MP3s
+    - Saves to `public/books/audio/{book-slug}/ch1.mp3`, `ch2.mp3`
+  - Pre-generated audio files cached in static assets for faster playback
+
+  ### Voice Dictionary Expansion
+  - Added `betaEnd` phrase to `src/lib/voiceDictionary.ts`
+  - Consistent with existing voice guidance patterns
+
+  ### Book Library Update
+  - Removed 5 books from repository:
+    - Report of the President's Commission (JFK Warren Report)
+    - Romeo and Juliet
+    - The City of God Vol. I
+    - The Great Gatsby
+    - The Origin and Development of the Moral Ideas
+  - Updated `public/books/books.json` to 4 remaining titles
+  - Removed stale audio files from `/public/books/audio/`
+
+  ### Vercel Analytics Integration
+  - Added `@vercel/analytics` package to `package.json`
+  - Integrated into `src/app/layout.tsx` for deployment monitoring
+  - Tracks page views, user interactions, TTS performance
+
+- **Files Created**:
+  - `scripts/generate-audio.mjs`
+- **Files Modified**:
+  - `src/lib/bookParser.ts`
+  - `src/lib/voiceDictionary.ts`
+  - `src/components/BookReader.tsx`
+  - `src/app/layout.tsx`
+  - `public/books/books.json`
+  - `package.json`
+- **Notes**:
+  - Beta limit prevents access to chapters 3+ pending backend API integration
+  - Audio pre-generation supports offline playback for first 2 chapters of each book
+  - Removed books freed ~15MB from repository footprint
+  - Analytics enabled for Vercel deployment insights
