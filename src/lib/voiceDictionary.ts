@@ -71,6 +71,21 @@ const voiceDictionary = {
     nextParagraph: 'Next paragraph.',
     prevParagraph: 'Previous paragraph.',
   },
+
+  typingEditor: {
+    title: 'Search',
+    idle: 'Type to search...',
+    listening: 'Listening...',
+    checking: 'Checking your input...',
+    confirming: 'Did you mean this?',
+    complete: 'Searching now.',
+    acceptHint: 'Press Enter to accept.',
+    retryHint: 'Press Space to type again.',
+    close: 'Close search',
+    originalLabel: 'Original input',
+    correctedLabel: 'Suggested correction',
+    lastKeyLabel: 'Last key',
+  },
 };
 
 export type { Zone };
