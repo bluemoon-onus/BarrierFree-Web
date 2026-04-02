@@ -174,6 +174,23 @@ Format: Stage > Task > Agent > Status
   - `src/app/page.tsx`
 - **Next Task**: Task #10 — Onboarding voice guide (Codex)
 
+- **Status**: ✅ Task #10 Complete
+- **Agent**: Codex
+- **Date**: 2026-04-02
+- **Changes**:
+  - Implemented `src/components/Onboarding.tsx` with first-visit localStorage gating and replay support
+  - Added sequential onboarding TTS playback using `voiceDictionary.onboarding`
+  - Added dismiss-on-complete, click, or keypress behavior with focus restoration to the main page
+  - Added `src/components/NavigationBar.tsx` with a Replay Guide button for re-triggering the onboarding flow
+  - Integrated onboarding visibility into `src/app/page.tsx` so zone speech pauses while the guide is open
+  - Verified with `npm run lint`, `npm run build`, and a local `npm run dev` startup check
+- **Files Created**:
+  - `src/components/NavigationBar.tsx`
+  - `src/components/Onboarding.tsx`
+- **Files Modified**:
+  - `src/app/page.tsx`
+- **Next Task**: Task #11 — Accessibility styling review (Claude CLI)
+
 ## [Stage 3: UI] — Pending
 ## [Stage 4: QA] — Pending
 ## [Stage 5: Deploy] — Pending

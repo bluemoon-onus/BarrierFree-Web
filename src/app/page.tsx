@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import BookReader from '@/components/BookReader';
 import MouseZoneOverlay from '@/components/MouseZoneOverlay';
+import NavigationBar from '@/components/NavigationBar';
+import Onboarding from '@/components/Onboarding';
 import TypingEditor from '@/components/TypingEditor';
 import { type Book, loadBooks } from '@/lib/books';
 import { type Zone, useMouseZone } from '@/hooks/useMouseZone';
@@ -93,19 +95,30 @@ export default function HomePage() {
   const { currentZone, isIdle, mousePosition, nearbyZones } = useMouseZone();
   const { speak } = useTTS();
 
+  const mainRef = useRef<HTMLElement | null>(null);
   const [viewState, setViewState] = useState<ViewState>('DEFAULT');
   const [showDebugOverlay, setShowDebugOverlay] = useState(true);
   const [books, setBooks] = useState<Book[]>([]);
   const [bookLoadState, setBookLoadState] = useState<BookLoadState>('loading');
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [lastSearchQuery, setLastSearchQuery] = useState<string | null>(null);
+  const [onboardingReplayTrigger, setOnboardingReplayTrigger] = useState(0);
+  const [isOnboardingVisible, setIsOnboardingVisible] = useState(false);
 
   const lastEnteredZoneRef = useRef<Zone | null>(null);
   const lastIdleZoneRef = useRef<Zone | null>(null);
 
   const hasPointerMoved = mousePosition.x > 0 || mousePosition.y > 0;
-  const isZoneSpeechEnabled = viewState === 'DEFAULT';
+  const isZoneSpeechEnabled = viewState === 'DEFAULT' && !isOnboardingVisible;
   const nearbyGuidanceText = getGuidanceText(nearbyZones);
+  const currentViewLabel =
+    viewState === 'BOOKS'
+      ? 'Books'
+      : viewState === 'READING'
+      ? selectedBook?.title ?? 'Reading'
+      : viewState === 'SEARCH'
+      ? 'Search'
+      : 'Home';
 
   useEffect(() => {
     let cancelled = false;
@@ -235,10 +248,19 @@ export default function HomePage() {
 
   return (
     <main
+      ref={mainRef}
+      tabIndex={-1}
       className="relative min-h-screen overflow-hidden bg-access-bg"
       aria-labelledby="barrierfree-web-title"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,215,0,0.12),_transparent_38%),radial-gradient(circle_at_bottom,_rgba(0,255,136,0.08),_transparent_30%)]" />
+
+      <NavigationBar
+        currentViewLabel={currentViewLabel}
+        onReplayGuide={() => {
+          setOnboardingReplayTrigger((previousValue) => previousValue + 1);
+        }}
+      />
 
       <section className="absolute inset-0">
         {(Object.entries(ZONE_CARDS) as Array<[Zone, ZoneCard]>).map(
@@ -446,6 +468,14 @@ export default function HomePage() {
         onSearch={(query) => {
           setLastSearchQuery(query);
           setViewState('DEFAULT');
+        }}
+      />
+
+      <Onboarding
+        replayTrigger={onboardingReplayTrigger}
+        onVisibilityChange={setIsOnboardingVisible}
+        onDismiss={() => {
+          mainRef.current?.focus();
         }}
       />
     </main>
