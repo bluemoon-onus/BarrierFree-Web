@@ -80,16 +80,19 @@ const voiceDictionary = {
 
   library: {
     open: (count: number): string =>
-      `Library. ${count} books available. Press a number 1 through 9 to select, or use arrow keys. Press Escape to go back.`,
+      `${count} books available. Press 0 for search, 1 through ${count} for books. Use up and down arrow keys to navigate.`,
     bookFocus: (num: number, title: string, author: string): string =>
       `${num}. ${title} by ${author}.`,
     selected: (title: string): string => `Opening ${title}.`,
     back: 'Returning to welcome screen.',
+    searchFocus: 'Search box. Type a book title or author and press Enter.',
     searching: 'Searching.',
     searchQuery: (query: string): string => `Searching for ${query}.`,
     searchFound: (count: number, query: string): string =>
       `${count} ${count === 1 ? 'book' : 'books'} found for ${query}.`,
     searchNotFound: (query: string): string => `No books found for ${query}.`,
+    searchResultsNav: 'Press the down arrow to move to search results.',
+    searchNoResultsNav: 'Press Escape to return to the library. Press 0 to search again.',
     searchPlaceholder: 'Search books...',
     searchClear: 'Search cleared.',
   },

@@ -101,10 +101,14 @@ export default function HomePage() {
     }
     if (!booksLoaded) return;
 
-    // Pre-warm book-specific phrases so arrow/hover is instant
+    // Pre-warm all library phrases so navigation is instant
     void prewarm([
       voiceDictionary.library.open(books.length),
       voiceDictionary.library.back,
+      voiceDictionary.library.searchFocus,
+      voiceDictionary.library.searchResultsNav,
+      voiceDictionary.library.searchNoResultsNav,
+      voiceDictionary.library.searchClear,
       ...books.map((b, i) => voiceDictionary.library.bookFocus(i + 1, b.title, b.author)),
       ...books.map((b) => voiceDictionary.library.selected(b.title)),
     ]);
@@ -141,11 +145,20 @@ export default function HomePage() {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey || event.metaKey || event.altKey) return;
+      // When search input is focused, let its own onKeyDown handle everything
       if (searchInputRef.current && document.activeElement === searchInputRef.current) return;
 
       const disp = searchResults ?? books;
-      const numericKeys: Record<string, number> = { '1': 0, '2': 1, '3': 2, '4': 3 };
 
+      // Key 0 → move to search box
+      if (event.key === '0') {
+        event.preventDefault();
+        setFocusedLibraryIndex(-1);
+        void speakRef.current(voiceDictionary.library.searchFocus, { priority: 'high' });
+        return;
+      }
+
+      const numericKeys: Record<string, number> = { '1': 0, '2': 1, '3': 2, '4': 3 };
       if (event.key in numericKeys) {
         const idx = numericKeys[event.key];
         if (idx !== undefined && idx < disp.length) {
@@ -153,8 +166,9 @@ export default function HomePage() {
           setFocusedLibraryIndex(idx);
           const book = disp[idx];
           if (book) {
+            const origIdx = books.indexOf(book);
             void speakRef.current(
-              voiceDictionary.library.bookFocus(idx + 1, book.title, book.author),
+              voiceDictionary.library.bookFocus(origIdx + 1, book.title, book.author),
               { priority: 'high' },
             );
             openBook(book);
@@ -169,8 +183,9 @@ export default function HomePage() {
           const next = Math.min(prev + 1, disp.length - 1);
           const book = disp[next];
           if (book) {
+            const origIdx = books.indexOf(book);
             void speakRef.current(
-              voiceDictionary.library.bookFocus(next + 1, book.title, book.author),
+              voiceDictionary.library.bookFocus(origIdx + 1, book.title, book.author),
               { priority: 'high' },
             );
           }
@@ -181,17 +196,24 @@ export default function HomePage() {
 
       if (event.key === 'ArrowUp') {
         event.preventDefault();
-        setFocusedLibraryIndex((prev) => {
-          const next = Math.max(prev - 1, 0);
-          const book = disp[next];
-          if (book) {
-            void speakRef.current(
-              voiceDictionary.library.bookFocus(next + 1, book.title, book.author),
-              { priority: 'high' },
-            );
-          }
-          return next;
-        });
+        // From first book → move to search box
+        if (focusedLibraryIndex === 0) {
+          setFocusedLibraryIndex(-1);
+          void speakRef.current(voiceDictionary.library.searchFocus, { priority: 'high' });
+        } else {
+          setFocusedLibraryIndex((prev) => {
+            const next = Math.max(prev - 1, 0);
+            const book = disp[next];
+            if (book) {
+              const origIdx = books.indexOf(book);
+              void speakRef.current(
+                voiceDictionary.library.bookFocus(origIdx + 1, book.title, book.author),
+                { priority: 'high' },
+              );
+            }
+            return next;
+          });
+        }
         return;
       }
 
@@ -216,9 +238,13 @@ export default function HomePage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appState, books, focusedLibraryIndex, searchResults]);
 
-  // Keep focused library item's DOM button in focus
+  // Keep focused item in DOM focus (-1 = search, 0+ = book buttons)
   useEffect(() => {
     if (appState !== 'LIBRARY') return;
+    if (focusedLibraryIndex === -1) {
+      searchInputRef.current?.focus();
+      return;
+    }
     const list = libraryListRef.current;
     if (!list) return;
     const buttons = list.querySelectorAll<HTMLButtonElement>('button[data-book-index]');
@@ -255,7 +281,8 @@ export default function HomePage() {
         b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q),
     );
     setSearchResults(results);
-    setFocusedLibraryIndex(0);
+    // Move focus to first result if any; keep search focused if no results
+    if (results.length > 0) setFocusedLibraryIndex(0);
 
     searchTokenRef.current += 1;
     const token = searchTokenRef.current;
@@ -273,11 +300,15 @@ export default function HomePage() {
           voiceDictionary.library.searchFound(results.length, q),
           { priority: 'high' },
         );
+        if (token !== searchTokenRef.current) return;
+        await speakRef.current(voiceDictionary.library.searchResultsNav, { priority: 'high' });
       } else {
         await speakRef.current(
           voiceDictionary.library.searchNotFound(q),
           { priority: 'high' },
         );
+        if (token !== searchTokenRef.current) return;
+        await speakRef.current(voiceDictionary.library.searchNoResultsNav, { priority: 'high' });
       }
     })();
   }
@@ -325,11 +356,14 @@ export default function HomePage() {
           <p className="mt-5 text-xl text-access-text/70">
             Move your mouse. Listen. Read.
           </p>
+          <p className="mt-8 rounded-xl border-2 border-access-accent px-6 py-3 text-lg font-bold text-access-accent">
+            Please turn up your speaker volume to hear the voice guidance.
+          </p>
           <button
             ref={getStartedRef}
             type="button"
             aria-label="Get started, open book library"
-            className="mt-12 min-h-[64px] min-w-[280px] rounded-2xl bg-access-accent text-2xl font-semibold text-access-bg transition hover:bg-access-accent/90 focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight"
+            className="mt-6 min-h-[64px] min-w-[280px] rounded-2xl bg-access-accent text-2xl font-semibold text-access-bg transition hover:bg-access-accent/90 focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight"
             onClick={openLibrary}
           >
             Get Started
@@ -346,15 +380,35 @@ export default function HomePage() {
               {booksLoaded ? `${books.length} books available` : 'Loading...'}
             </p>
 
-            {/* Search input */}
-            <div className="mt-6">
+            {/* Search input — item 0 */}
+            <div
+              className={[
+                'mt-6 flex min-h-[72px] w-full cursor-text items-center gap-5 rounded-2xl border px-5 py-4 transition',
+                focusedLibraryIndex === -1
+                  ? 'border-access-accent bg-access-zone shadow-[0_0_0_1px_rgba(255,215,0,0.3)]'
+                  : 'border-access-text/10 bg-access-zone/60 hover:border-access-accent/50 hover:bg-access-zone',
+              ].join(' ')}
+              role="search"
+              onMouseEnter={() => {
+                setFocusedLibraryIndex(-1);
+                void speakRef.current(voiceDictionary.library.searchFocus, { priority: 'high' });
+              }}
+              onClick={() => searchInputRef.current?.focus()}
+            >
+              <span
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-access-accent text-xl font-bold text-access-bg"
+                aria-hidden="true"
+              >
+                0
+              </span>
               <input
                 ref={searchInputRef}
                 type="search"
                 value={searchQuery}
                 placeholder={voiceDictionary.library.searchPlaceholder}
                 aria-label="Search books by title or author"
-                className="w-full rounded-2xl border border-access-text/20 bg-access-zone px-5 py-4 text-xl text-access-text placeholder:text-access-text/40 focus:border-access-accent focus:outline-none focus:ring-2 focus:ring-access-accent/30"
+                className="flex-1 bg-transparent text-xl text-access-text placeholder:text-access-text/40 focus:outline-none"
+                onFocus={() => setFocusedLibraryIndex(-1)}
                 onChange={(e) => {
                   const q = e.target.value;
                   setSearchQuery(q);
@@ -384,10 +438,21 @@ export default function HomePage() {
                   }
                   if (e.key === 'ArrowDown') {
                     e.preventDefault();
-                    const first = libraryListRef.current?.querySelector<HTMLButtonElement>(
-                      'button[data-book-index]',
-                    );
-                    first?.focus();
+                    const disp = searchResults ?? books;
+                    const firstBook = disp[0];
+                    if (firstBook) {
+                      const origIdx = books.indexOf(firstBook);
+                      setFocusedLibraryIndex(0);
+                      void speakRef.current(
+                        voiceDictionary.library.bookFocus(origIdx + 1, firstBook.title, firstBook.author),
+                        { priority: 'high' },
+                      );
+                    }
+                  }
+                  if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    // Already at top — stay in search, re-announce
+                    void speakRef.current(voiceDictionary.library.searchFocus, { priority: 'high' });
                   }
                 }}
               />
@@ -456,8 +521,7 @@ export default function HomePage() {
             </ol>
 
             <p className="mt-8 text-lg text-access-text/40">
-              Press 1–4 to select a book, Arrow keys to navigate, Enter to open,
-              Escape to go back.
+              0 — Search &nbsp;·&nbsp; 1–4 — Books &nbsp;·&nbsp; ↑↓ — Navigate &nbsp;·&nbsp; Enter — Open &nbsp;·&nbsp; Esc — Back
             </p>
           </div>
         </div>

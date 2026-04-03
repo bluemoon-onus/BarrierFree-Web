@@ -390,5 +390,9 @@
   "nova|tts-1|7": "/audio/ff8de889c9cd79b68e141056bf0acd1060ae152b.mp3",
   "nova|tts-1|8": "/audio/e3f1ab443eca7bb65f652f308776c9d97674cc10.mp3",
   "nova|tts-1|9": "/audio/f59d38887519a2b4e2b41e999679dc3bd9dfa25b.mp3",
-  "nova|tts-1|delete": "/audio/0be2df74ea855462d4e13c3c84fe917636c0593d.mp3"
+  "nova|tts-1|delete": "/audio/0be2df74ea855462d4e13c3c84fe917636c0593d.mp3",
+  "nova|tts-1|4 books available. Press 0 for search, 1 through 4 for books. Use up and down arrow keys to navigate.": "/audio/a178bb2d31c4adac97b34f8188ea73fdb232bf67.mp3",
+  "nova|tts-1|Search box. Type a book title or author and press Enter.": "/audio/0edd5ac5b1b0f0132c1b29e551d0c846b5c1653f.mp3",
+  "nova|tts-1|Press the down arrow to move to search results.": "/audio/ac290f3ce00a8c32c381959586ac6eb562288116.mp3",
+  "nova|tts-1|Press Escape to return to the library. Press 0 to search again.": "/audio/0fb0f29f82fa098286c69e9819ce7dbf4d7bb433.mp3"
 }

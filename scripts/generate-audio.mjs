@@ -79,8 +79,11 @@ const phrases = [
   'Opening library.',
 
   // Library screen
-  `Library. ${books.length} books available. Press a number 1 through 9 to select, or use arrow keys. Press Escape to go back.`,
+  `${books.length} books available. Press 0 for search, 1 through ${books.length} for books. Use up and down arrow keys to navigate.`,
   'Returning to welcome screen.',
+  'Search box. Type a book title or author and press Enter.',
+  'Press the down arrow to move to search results.',
+  'Press Escape to return to the library. Press 0 to search again.',
 
   // Per-book: navigation + selection
   ...books.map((b, i) => `${i + 1}. ${b.title} by ${b.author}.`),
