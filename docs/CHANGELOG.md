@@ -467,3 +467,58 @@ Format: Stage > Task > Agent > Status
   - Audio pre-generation supports offline playback for first 2 chapters of each book
   - Removed books freed ~15MB from repository footprint
   - Analytics enabled for Vercel deployment insights
+
+---
+
+## [Post-v1.0: Library Search UI & Voice Navigation] — 2026-04-02
+- **Status**: ✅ Complete
+- **Agent**: Codex & Claude CLI
+- **Date**: 2026-04-02
+- **Changes**:
+
+  ### Library Search Interface
+  - Styled library search input as keyboard-selectable item "0" with numbered badge matching book button appearance
+  - Keyboard shortcut: `0` or `ArrowUp` from first book → focus search box with TTS: "Search box. Type a book title or author and press Enter."
+  - `ArrowDown` from search → returns focus to first book with TTS announcement
+  - Press `0` while viewing search results → clears search field and allows fresh input (prevents '0' character from being typed into field)
+
+  ### Voice Announcements for Library Navigation
+  - Library entry: "4 books available. Press 0 for search, 1 through 4 for books. Use up and down arrow keys to navigate."
+  - Search results display: announces count + "Press the down arrow to move to search results."
+  - No results scenario: "No books found" + "Press Escape to return to the library. Press 0 to search again."
+  - Per-book announcement: includes title and author on focus
+
+  ### BookReader Optimization
+  - Implemented sentence-level preloading: on `sentenceIndex` change, reader preloads ±3 adjacent sentences
+  - Significantly improves audio playback speed between sentences within a paragraph
+
+  ### Welcome Page Enhancement
+  - Added prominent volume warning above "Get Started" button
+  - Ensures users are aware of audio output before entering library
+
+  ### Audio Generation Pipeline
+  - Extended `scripts/generate-audio.mjs` with 4 new MP3 files for updated library phrases:
+    - `searchFocus` — "Search box" announcement
+    - `searchResultsNav` — search results navigation guidance
+    - `searchNoResultsNav` — "no books found" + recovery instructions
+    - `libraryOpen` — updated library entry greeting with search/number key hints
+  - Pre-generated MP3s cached in `public/books/audio/` for instant playback
+
+  ### Voice Dictionary Updates
+  - Added `search` namespace: `focus`, `resultsNav`, `noResultsNav`
+  - Added `library` namespace: `open(count)` now includes search and number-key instructions
+  - Ensured all dynamic library announcements use pre-generated or synthesized audio
+
+- **Files Created**:
+  - (MP3 audio files in `public/books/audio/`)
+- **Files Modified**:
+  - `src/lib/voiceDictionary.ts`
+  - `src/components/BookReader.tsx`
+  - `src/app/page.tsx`
+  - `scripts/generate-audio.mjs`
+  - `public/books/books.json`
+- **Notes**:
+  - Search box appears as item "0" with consistent visual style (numbered badge + highlight on focus)
+  - Preloading ±3 sentences provides smooth TTS playback within paragraphs
+  - Volume warning on welcome page reduces first-time user surprises
+  - All voice guidance follows established `voiceDictionary` patterns and pre-generated audio caching strategy
