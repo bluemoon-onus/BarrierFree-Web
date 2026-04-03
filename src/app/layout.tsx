@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 
 import "../styles/globals.css";
@@ -7,6 +7,13 @@ export const metadata: Metadata = {
   title: "BarrierFree-Web",
   description: "An accessible eBook reader with voice guidance for visually impaired users.",
   applicationName: "BarrierFree-Web",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

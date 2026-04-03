@@ -349,24 +349,24 @@ export default function HomePage() {
     >
       {/* WELCOME state */}
       {appState === 'WELCOME' ? (
-        <div className="flex min-h-screen flex-col items-center justify-center px-6 py-16 text-center">
-          <p className="text-lg uppercase tracking-widest text-access-highlight">
+        <div className="flex min-h-screen flex-col items-center justify-center px-6 py-12 text-center">
+          <p className="text-base uppercase tracking-widest text-access-highlight sm:text-lg">
             AccessReader
           </p>
-          <h1 className="mt-6 text-5xl font-semibold text-access-text">
+          <h1 className="mt-4 text-4xl font-semibold text-access-text sm:mt-6 sm:text-5xl">
             Voice-Guided Reading
           </h1>
-          <p className="mt-5 text-xl text-access-text/70">
-            Move your mouse. Listen. Read.
+          <p className="mt-4 text-lg text-access-text/70 sm:mt-5 sm:text-xl">
+            Tap to start. Listen. Read.
           </p>
-          <p className="mt-8 rounded-xl border-2 border-access-accent px-6 py-3 text-lg font-bold text-access-accent">
-            Please turn up your speaker volume to hear the voice guidance.
+          <p className="mt-6 rounded-xl border-2 border-access-accent px-5 py-3 text-base font-bold text-access-accent sm:mt-8 sm:px-6 sm:text-lg">
+            Please turn up your volume to hear the voice guidance.
           </p>
           <button
             ref={getStartedRef}
             type="button"
             aria-label="Get started, open book library"
-            className="mt-6 min-h-[64px] min-w-[280px] rounded-2xl bg-access-accent text-2xl font-semibold text-access-bg transition hover:bg-access-accent/90 focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight"
+            className="mt-6 min-h-[64px] w-full max-w-xs rounded-2xl bg-access-accent text-2xl font-semibold text-access-bg transition hover:bg-access-accent/90 focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight"
             onClick={openLibrary}
           >
             Get Started
@@ -376,10 +376,10 @@ export default function HomePage() {
 
       {/* LIBRARY state */}
       {appState === 'LIBRARY' ? (
-        <div className="flex min-h-screen flex-col px-6 py-10">
+        <div className="flex min-h-screen flex-col px-4 py-8 sm:px-6 sm:py-10">
           <div className="mx-auto w-full max-w-3xl">
-            <h1 className="text-4xl font-semibold text-access-text">Library</h1>
-            <p className="mt-2 text-xl text-access-text/60">
+            <h1 className="text-3xl font-semibold text-access-text sm:text-4xl">Library</h1>
+            <p className="mt-2 text-lg text-access-text/60 sm:text-xl">
               {booksLoaded ? `${books.length} books available` : 'Loading...'}
             </p>
 
@@ -537,7 +537,7 @@ export default function HomePage() {
               )}
             </ol>
 
-            <p className="mt-8 text-lg text-access-text/40">
+            <p className="mt-8 hidden text-lg text-access-text/40 md:block">
               0 — Search &nbsp;·&nbsp; 1–4 — Books &nbsp;·&nbsp; ↑↓ — Navigate &nbsp;·&nbsp; Enter — Open &nbsp;·&nbsp; Esc — Back
             </p>
           </div>

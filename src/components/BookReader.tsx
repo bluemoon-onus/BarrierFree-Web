@@ -380,15 +380,15 @@ export function BookReader({
       aria-describedby="reader-keyboard-hints"
     >
       {/* Top bar */}
-      <div className="flex shrink-0 items-center justify-between gap-4 border-b border-access-accent/20 px-6 py-4">
+      <div className="flex shrink-0 items-center justify-between gap-3 border-b border-access-accent/20 px-4 py-3 sm:gap-4 sm:px-6 sm:py-4">
         <div className="min-w-0">
-          <p className="truncate text-lg font-semibold text-access-text">
+          <p className="truncate text-base font-semibold text-access-text sm:text-lg">
             {book.title}
           </p>
-          <p className="mt-1 text-lg text-access-text/60">{activeChapter.title}</p>
+          <p className="mt-0.5 text-base text-access-text/60 sm:mt-1 sm:text-lg">{activeChapter.title}</p>
         </div>
         <div
-          className="shrink-0 text-lg text-access-accent"
+          className="shrink-0 text-base text-access-accent sm:text-lg"
           aria-live="polite"
           aria-atomic="true"
         >
@@ -397,14 +397,14 @@ export function BookReader({
         <button
           type="button"
           aria-label="Close reader, return to library"
-          className="min-h-[44px] min-w-[44px] shrink-0 rounded-full border border-access-accent/40 px-5 text-lg font-medium text-access-text transition hover:border-access-accent hover:text-access-accent focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight motion-reduce:transition-none"
+          className="min-h-[44px] min-w-[44px] shrink-0 rounded-full border border-access-accent/40 px-4 text-base font-medium text-access-text transition hover:border-access-accent hover:text-access-accent focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight motion-reduce:transition-none sm:px-5 sm:text-lg"
           onClick={() => {
             invalidatePlaybackRef.current();
             void speak(voiceDictionary.reader.back, { priority: 'high' });
             onCloseRef.current();
           }}
         >
-          Esc
+          ✕
         </button>
       </div>
 
@@ -436,8 +436,8 @@ export function BookReader({
         )}
       </div>
 
-      {/* Status + keyboard hints */}
-      <div className="shrink-0 border-t border-access-accent/20 px-6 py-4">
+      {/* Status + controls */}
+      <div className="shrink-0 border-t border-access-accent/20 px-4 py-4">
         <div
           className="mb-3 text-center text-lg text-access-highlight"
           role="status"
@@ -450,9 +450,112 @@ export function BookReader({
               ? 'End of chapter'
               : 'Reading'}
         </div>
+
+        {/* Mobile touch controls */}
+        <div
+          className="flex items-center justify-center gap-2 md:hidden"
+          role="toolbar"
+          aria-label="Reader controls"
+        >
+          <button
+            type="button"
+            aria-label="Previous paragraph"
+            className="flex min-h-[52px] min-w-[52px] items-center justify-center rounded-full border border-access-text/20 bg-access-zone text-2xl text-access-text/70 active:bg-access-zone/80 focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight"
+            onClick={() => {
+              if (totalSentences === 0 || paragraphBoundaries.length === 0) return;
+              invalidatePlaybackRef.current();
+              setSentenceIndex((prev) => {
+                const curPara = paragraphBoundaries.reduce(
+                  (acc, start, i) => (start <= prev ? i : acc), 0,
+                );
+                return paragraphBoundaries[Math.max(curPara - 1, 0)] ?? 0;
+              });
+              setReaderState('reading');
+              setIsReadyToRead(true);
+            }}
+          >
+            ⏮
+          </button>
+          <button
+            type="button"
+            aria-label="Previous sentence"
+            className="flex min-h-[52px] min-w-[52px] items-center justify-center rounded-full border border-access-text/20 bg-access-zone text-2xl text-access-text/70 active:bg-access-zone/80 focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight"
+            onClick={() => {
+              if (totalSentences === 0) return;
+              const elapsed = Date.now() - sentenceStartTimeRef.current;
+              invalidatePlaybackRef.current();
+              setReaderState('reading');
+              setIsReadyToRead(true);
+              if (elapsed < NEAR_START_MS && sentenceIndex > 0) {
+                void speak(voiceDictionary.reader.prevSentence, { priority: 'high' });
+                setSentenceIndex((prev) => Math.max(prev - 1, 0));
+              } else {
+                setRestartTrigger((t) => t + 1);
+              }
+            }}
+          >
+            ↑
+          </button>
+          <button
+            type="button"
+            aria-label={readerState === 'paused' ? 'Resume reading' : 'Pause reading'}
+            className="flex min-h-[64px] min-w-[64px] items-center justify-center rounded-full bg-access-accent text-3xl text-access-bg active:bg-access-accent/80 focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight"
+            onClick={() => {
+              if (readerState === 'paused') {
+                setReaderState('reading');
+                setRestartTrigger((t) => t + 1);
+                void speak(voiceDictionary.reader.resumed, { priority: 'high' });
+              } else if (readerState === 'reading') {
+                invalidatePlaybackRef.current();
+                setReaderState('paused');
+                void speak(voiceDictionary.reader.paused, { priority: 'high' });
+              }
+            }}
+          >
+            {readerState === 'paused' ? '▶' : '⏸'}
+          </button>
+          <button
+            type="button"
+            aria-label="Next sentence"
+            className="flex min-h-[52px] min-w-[52px] items-center justify-center rounded-full border border-access-text/20 bg-access-zone text-2xl text-access-text/70 active:bg-access-zone/80 focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight"
+            onClick={() => {
+              if (totalSentences === 0) return;
+              invalidatePlaybackRef.current();
+              void speak(voiceDictionary.reader.nextSentence, { priority: 'high' });
+              setSentenceIndex((prev) => Math.min(prev + 1, totalSentences - 1));
+              setReaderState('reading');
+              setIsReadyToRead(true);
+            }}
+          >
+            ↓
+          </button>
+          <button
+            type="button"
+            aria-label="Next paragraph"
+            className="flex min-h-[52px] min-w-[52px] items-center justify-center rounded-full border border-access-text/20 bg-access-zone text-2xl text-access-text/70 active:bg-access-zone/80 focus-visible:outline focus-visible:outline-4 focus-visible:outline-access-highlight"
+            onClick={() => {
+              if (totalSentences === 0 || paragraphBoundaries.length === 0) return;
+              invalidatePlaybackRef.current();
+              setSentenceIndex((prev) => {
+                const curPara = paragraphBoundaries.reduce(
+                  (acc, start, i) => (start <= prev ? i : acc), 0,
+                );
+                const nextStart =
+                  paragraphBoundaries[Math.min(curPara + 1, paragraphBoundaries.length - 1)] ?? prev;
+                return nextStart;
+              });
+              setReaderState('reading');
+              setIsReadyToRead(true);
+            }}
+          >
+            ⏭
+          </button>
+        </div>
+
+        {/* Desktop keyboard hints */}
         <div
           id="reader-keyboard-hints"
-          className="flex flex-wrap items-center justify-center gap-3 text-lg text-access-text/50"
+          className="hidden flex-wrap items-center justify-center gap-3 text-lg text-access-text/50 md:flex"
         >
           <span className="rounded-full border border-access-text/10 bg-access-zone px-4 py-2">
             Space — Pause / Resume
