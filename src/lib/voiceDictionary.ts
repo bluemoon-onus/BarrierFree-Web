@@ -85,6 +85,13 @@ const voiceDictionary = {
       `${num}. ${title} by ${author}.`,
     selected: (title: string): string => `Opening ${title}.`,
     back: 'Returning to welcome screen.',
+    searching: 'Searching.',
+    searchQuery: (query: string): string => `Searching for ${query}.`,
+    searchFound: (count: number, query: string): string =>
+      `${count} ${count === 1 ? 'book' : 'books'} found for ${query}.`,
+    searchNotFound: (query: string): string => `No books found for ${query}.`,
+    searchPlaceholder: 'Search books...',
+    searchClear: 'Search cleared.',
   },
 
   reader: {

@@ -98,6 +98,19 @@ const phrases = [
 
   // Beta end message
   'Reading beyond this point is not yet supported in the beta. Thank you for trying AccessReader.',
+
+  // Search UI
+  'Searching.',
+  'Search cleared.',
+
+  // Single characters a–z (for key-by-key search announcement)
+  ...'abcdefghijklmnopqrstuvwxyz'.split(''),
+
+  // Digits 0–9
+  ...'0123456789'.split(''),
+
+  // Special key names
+  'delete',
 ];
 
 // ── Book sentences (first 3000 chars of chapters 0–1) ────────────────────────

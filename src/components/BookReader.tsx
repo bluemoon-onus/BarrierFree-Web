@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useTTS } from '@/hooks/useTTS';
+import { prewarm } from '@/lib/speechUtils';
 import type { Book, Chapter } from '@/lib/books';
 import { loadChapterContent } from '@/lib/bookParser';
 import voiceDictionary from '@/lib/voiceDictionary';
@@ -216,6 +217,19 @@ export function BookReader({
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeChapter, book, isReadyToRead, sentenceIndex, sentences, readerState, restartTrigger]);
+
+  // ─── Pre-warm adjacent sentences ──────────────────────────────────────────
+  useEffect(() => {
+    if (!isReadyToRead || sentences.length === 0) return;
+    const toPrewarm: string[] = [];
+    for (let i = 1; i <= 3; i++) {
+      const next = sentences[sentenceIndex + i];
+      if (next) toPrewarm.push(next);
+      const prev = sentences[sentenceIndex - i];
+      if (prev) toPrewarm.push(prev);
+    }
+    if (toPrewarm.length > 0) void prewarm(toPrewarm);
+  }, [sentenceIndex, sentences, isReadyToRead]);
 
   // ─── Keyboard controls ────────────────────────────────────────────────────
   useEffect(() => {
