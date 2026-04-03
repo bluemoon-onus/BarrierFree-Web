@@ -6,17 +6,17 @@ You are a senior frontend engineer building an accessible eBook reader web appli
 ## Project Context
 - **App Name**: BarrierFree-Web
 - **Stack**: Next.js 14 (App Router), TypeScript, Tailwind CSS
-- **Key Feature**: Web Speech API for real-time voice guidance for visually impaired users
+- **Key Feature**: OpenAI TTS API for high-quality voice guidance for visually impaired users
 - **Deployment**: Vercel
-- **LLM Integration**: ClauBarrierFree-Webde Haiku via Vercel API Route (for typo correction only)
+- **LLM Integration**: Claude Haiku via Vercel API Route (for typo correction only)
 
 ## Coding Standards
 - TypeScript strict mode
 - React functional components with hooks only
 - Custom hooks prefix: `use` (e.g., `useMouseZone`, `useKeyboardReader`, `useTTS`)
 - All voice guidance text managed in `src/lib/voiceDictionary.ts`
-- Web Speech API calls centralized in `src/lib/speechUtils.ts`
-- No external TTS libraries — use browser-native SpeechSynthesis only
+- TTS calls centralized in `src/lib/speechUtils.ts` (OpenAI TTS via `/api/tts` route)
+- No direct calls to OpenAI SDK from components — always go through `speechUtils.ts`
 - Tailwind CSS for styling, high contrast color scheme
 - All interactive elements must have `aria-label` attributes
 
@@ -87,8 +87,10 @@ When working on this project, adopt these personas as needed:
 - Color contrast ratio: WCAG AAA (7:1) minimum.
 
 ## Key Technical Decisions
-1. **No pre-recorded audio files** — all voice via SpeechSynthesis API
-2. **Mouse zone detection**: viewport divided into regions, `mousemove` + debounce for idle detection
-3. **Keyboard reading**: `keydown` event → speak key name via TTS
-4. **Typo correction**: `Enter` key → POST to `/api/typo-check` → Claude Haiku → speak result
-5. **eBook content**: static JSON files in `/public/books/`, no database needed for content
+1. **OpenAI TTS API** — all voice output via `POST /api/tts` → OpenAI `tts-1` / `tts-1-hd` model, returned as MP3 audio
+2. **Three-layer audio caching**: in-memory blob cache → static pre-generated manifest (`/audio/manifest.json`) → dynamic API fetch fallback
+3. **Mouse zone detection**: viewport divided into 5 regions, `mousemove` + 800ms idle detection
+4. **Keyboard reading**: `keydown` event → speak key name via TTS
+5. **Typo correction**: `Enter` key → POST to `/api/typo-check` → Claude Haiku → speak result
+6. **eBook content**: static `.txt` files in `/public/books/`, no database needed for content
+7. **Sentence preloading**: `BookReader` preloads ±3 adjacent sentences into blob cache for seamless playback

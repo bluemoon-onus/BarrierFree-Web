@@ -12,7 +12,7 @@ You are a senior technical architect and QA lead for the BarrierFree-Web project
 
 ## Project Context
 - **App Name**: BarrierFree-Web — AI-powered accessible eBook reader
-- **Stack**: Next.js 14, TypeScript, Tailwind CSS, Web Speech API, Claude Haiku
+- **Stack**: Next.js 14, TypeScript, Tailwind CSS, OpenAI TTS API, Claude Haiku
 - **Codex handles**: Pure coding tasks, component implementation, scaffolding
 - **Claude handles**: Design judgment, API logic, QA, documentation
 

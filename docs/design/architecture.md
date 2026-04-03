@@ -7,8 +7,8 @@
 │                  Browser (Client)                 │
 │                                                   │
 │  ┌─────────┐  ┌──────────┐  ┌────────────────┐  │
-│  │ Mouse   │  │ Keyboard │  │ Web Speech API │  │
-│  │ Tracker │  │ Reader   │  │ (SpeechSynth)  │  │
+│  │ Mouse   │  │ Keyboard │  │ OpenAI TTS API │  │
+│  │ Tracker │  │ Reader   │  │ (HTMLAudio+MP3)│  │
 │  └────┬────┘  └────┬─────┘  └───────┬────────┘  │
 │       │            │                │             │
 │  ┌────▼────────────▼────────────────▼──────────┐ │
@@ -28,18 +28,18 @@
 │  └──────────────────────────────────────────────┘ │
 │                        │                          │
 └────────────────────────┼──────────────────────────┘
-                         │ POST /api/typo-check
-                         ▼
-               ┌──────────────────┐
-               │  Vercel API Route │
-               │  (Edge Function)  │
-               └────────┬─────────┘
-                        │
-                        ▼
-               ┌──────────────────┐
-               │  Anthropic API    │
-               │  (Claude Haiku)   │
-               └──────────────────┘
+                         │ POST /api/typo-check        POST /api/tts
+                         ▼                                  ▼
+               ┌──────────────────┐             ┌──────────────────┐
+               │  Vercel API Route │             │  Vercel API Route │
+               │  (Edge Function)  │             │  (Node Runtime)   │
+               └────────┬─────────┘             └────────┬─────────┘
+                        │                                 │
+                        ▼                                 ▼
+               ┌──────────────────┐             ┌──────────────────┐
+               │  Anthropic API    │             │  OpenAI TTS API   │
+               │  (Claude Haiku)   │             │  (tts-1 / hd)     │
+               └──────────────────┘             └──────────────────┘
 ```
 
 ## Mouse 4-Zone Navigation Model
@@ -158,8 +158,8 @@ function getZone(x: number, y: number, w: number, h: number): Zone {
 ## Browser Compatibility
 | Feature | Chrome (Win/Mac) | Safari (Mac) |
 |---------|-----------------|--------------|
-| SpeechSynthesis | ✅ | ✅ |
-| SpeechRecognition | ✅ | ❌ (not needed) |
+| HTMLAudioElement (MP3) | ✅ | ✅ |
+| fetch (OpenAI TTS route) | ✅ | ✅ |
 | mousemove events | ✅ | ✅ |
 | keydown events | ✅ | ✅ |
 | Vercel deploy | ✅ | ✅ |
