@@ -150,9 +150,12 @@ export default function HomePage() {
 
       const disp = searchResults ?? books;
 
-      // Key 0 → move to search box
+      // Key 0 → clear search and move to search box
       if (event.key === '0') {
         event.preventDefault();
+        setSearchQuery('');
+        setSearchResults(null);
+        searchTokenRef.current += 1;
         setFocusedLibraryIndex(-1);
         void speakRef.current(voiceDictionary.library.searchFocus, { priority: 'high' });
         return;
@@ -418,6 +421,20 @@ export default function HomePage() {
                   }
                 }}
                 onKeyDown={(e) => {
+                  // '0' with no results → clear field and start fresh
+                  if (
+                    e.key === '0' &&
+                    searchResults !== null &&
+                    searchResults.length === 0 &&
+                    !e.ctrlKey && !e.metaKey && !e.altKey
+                  ) {
+                    e.preventDefault();
+                    setSearchQuery('');
+                    setSearchResults(null);
+                    searchTokenRef.current += 1;
+                    void speakRef.current(voiceDictionary.library.searchFocus, { priority: 'high' });
+                    return;
+                  }
                   if (!e.ctrlKey && !e.metaKey && !e.altKey) {
                     if (e.key.length === 1) {
                       void speakRef.current(e.key, { priority: 'high' });
