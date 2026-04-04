@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useTTS } from '@/hooks/useTTS';
-import { prewarm } from '@/lib/speechUtils';
+import { loadBookManifest, prewarm } from '@/lib/speechUtils';
 import type { Book, Chapter } from '@/lib/books';
 import { loadChapterContent } from '@/lib/bookParser';
 import voiceDictionary from '@/lib/voiceDictionary';
@@ -131,6 +131,9 @@ export function BookReader({
 
     void (async () => {
       try {
+        // Load per-book manifest so all sentences resolve from static files
+        await loadBookManifest(book.id);
+
         void speak(voiceDictionary.reader.loading, { priority: 'high' });
         const paragraphs = await loadChapterContent(
           book.filename,

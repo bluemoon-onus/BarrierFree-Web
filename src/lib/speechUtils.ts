@@ -15,21 +15,49 @@ export const TTS_BLOCKED_EVENT = 'barrierfree-web:tts-blocked';
 const DEFAULT_PREFERENCES: VoicePreferences = { voice: 'nova', model: 'tts-1' };
 let prefs: VoicePreferences = { ...DEFAULT_PREFERENCES };
 
-// ── Static manifest (pre-generated audio files in public/audio/) ─────────────
+// ── UI manifest (/public/audio/manifest.json) ────────────────────────────────
 // Maps "voice|model|text" → "/audio/{sha1}.mp3"
-let manifestPromise: Promise<Record<string, string>> | null = null;
+let uiManifestPromise: Promise<Record<string, string>> | null = null;
 
-function loadManifest(): Promise<Record<string, string>> {
-  if (!manifestPromise) {
-    manifestPromise = fetch('/audio/manifest.json')
+function loadUIManifest(): Promise<Record<string, string>> {
+  if (!uiManifestPromise) {
+    uiManifestPromise = fetch('/audio/manifest.json')
       .then((r) => (r.ok ? (r.json() as Promise<Record<string, string>>) : {}))
       .catch(() => ({} as Record<string, string>));
   }
-  return manifestPromise;
+  return uiManifestPromise;
+}
+
+// ── Per-book manifests (/public/audio/{bookId}/{bookId}.json) ─────────────────
+// Maps "voice|model|text" → "/audio/{bookId}/{sha1}.mp3"
+const bookManifestCache = new Map<string, Record<string, string>>();
+const bookManifestLoading = new Map<string, Promise<void>>();
+
+/**
+ * Load and cache the pre-generated audio manifest for a specific book.
+ * Call this when opening a book so all its sentences resolve from static files
+ * instead of hitting /api/tts.
+ */
+export function loadBookManifest(bookId: string): Promise<void> {
+  if (bookManifestCache.has(bookId)) return Promise.resolve();
+  const existing = bookManifestLoading.get(bookId);
+  if (existing) return existing;
+
+  const p = (async () => {
+    try {
+      const r = await fetch(`/audio/${bookId}/${bookId}.json`);
+      const data: Record<string, string> = r.ok ? (await r.json() as Record<string, string>) : {};
+      bookManifestCache.set(bookId, data);
+    } catch {
+      bookManifestCache.set(bookId, {});
+    }
+  })();
+
+  bookManifestLoading.set(bookId, p);
+  return p;
 }
 
 // ── In-memory blob cache (current session) ───────────────────────────────────
-// Short texts (UI phrases, book titles) are cached after first fetch.
 const blobCache = new Map<string, Blob>();
 
 // ── Playback state ───────────────────────────────────────────────────────────
@@ -60,7 +88,12 @@ function cancelCurrent() {
 
 /**
  * Resolve audio source for a given text.
- * Priority: blobCache → static manifest file → dynamic /api/tts fetch
+ *
+ * Resolution order:
+ *   1. In-memory blob cache (instant)
+ *   2. UI manifest  (/audio/manifest.json — UI phrases)
+ *   3. Per-book manifests (/audio/{bookId}/{bookId}.json — book sentences)
+ *   4. Dynamic /api/tts (fallback, ~300ms)
  */
 async function resolveAudio(
   text: string,
@@ -70,21 +103,27 @@ async function resolveAudio(
 ): Promise<{ src: string; isBlob: boolean } | null> {
   const key = `${voice}|${model}|${text}`;
 
-  // 1. In-memory blob cache (instant)
+  // 1. In-memory blob cache
   const cachedBlob = blobCache.get(key);
   if (cachedBlob) {
     return { src: URL.createObjectURL(cachedBlob), isBlob: true };
   }
 
-  // 2. Static manifest (pre-generated, CDN-served)
-  const manifest = await loadManifest();
+  // 2. UI manifest
+  const uiManifest = await loadUIManifest();
   if (signal.aborted) return null;
-  const staticPath = manifest[key];
-  if (staticPath) {
-    return { src: staticPath, isBlob: false };
+  const uiPath = uiManifest[key];
+  if (uiPath) return { src: uiPath, isBlob: false };
+
+  // 3. Per-book manifests (already-loaded books)
+  for (const bookManifest of Array.from(bookManifestCache.values())) {
+    const bookPath = bookManifest[key];
+    if (bookPath) return { src: bookPath, isBlob: false };
   }
 
-  // 3. Dynamic API fetch (fallback for text not in manifest)
+  if (signal.aborted) return null;
+
+  // 4. Dynamic API (last resort — generates on the fly)
   const response = await fetch('/api/tts', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -96,7 +135,7 @@ async function resolveAudio(
   const blob = await response.blob();
   if (signal.aborted) return null;
 
-  // Cache short texts (UI cues, book titles) but not long book sentences
+  // Cache short texts; skip long book sentences (they'll be in the per-book manifest)
   if (text.length < 300) {
     blobCache.set(key, blob);
   }
@@ -143,7 +182,6 @@ export async function speak(text: string, options: SpeakOptions = {}) {
         resolve();
       };
 
-      // Safety: if audio events never fire (e.g. corrupt MP3), resolve after 30s
       const safetyTimer = window.setTimeout(() => {
         console.warn('[TTS] audio timeout — forcing resolve');
         done();
@@ -170,15 +208,15 @@ export async function speak(text: string, options: SpeakOptions = {}) {
 }
 
 /**
- * Pre-warm audio for a list of texts into the in-memory blob cache.
- * Call this when transitioning to a new screen so audio is instant when needed.
+ * Pre-warm audio into the in-memory blob cache.
+ * Checks UI manifest and per-book manifests before falling back to /api/tts.
  */
 export async function prewarm(texts: string[]): Promise<void> {
   if (typeof window === 'undefined') return;
 
   const voice = prefs.voice;
   const model = prefs.model;
-  const manifest = await loadManifest();
+  const uiManifest = await loadUIManifest();
 
   await Promise.allSettled(
     texts.map(async (rawText) => {
@@ -186,20 +224,20 @@ export async function prewarm(texts: string[]): Promise<void> {
       if (!text) return;
       const key = `${voice}|${model}|${text}`;
 
-      // Already in memory
       if (blobCache.has(key)) return;
 
-      const staticPath = manifest[key];
-      const url = staticPath ?? null;
-
-      // Fetch from static file or API
-      const fetchUrl = url
-        ? url
-        : `/api/tts`; // POST below
+      // Find a static URL (UI manifest first, then per-book manifests)
+      let staticUrl: string | null = uiManifest[key] ?? null;
+      if (!staticUrl) {
+        for (const bookManifest of Array.from(bookManifestCache.values())) {
+          const p = bookManifest[key];
+          if (p) { staticUrl = p; break; }
+        }
+      }
 
       try {
-        const response = url
-          ? await fetch(fetchUrl)
+        const response = staticUrl
+          ? await fetch(staticUrl)
           : await fetch('/api/tts', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },

@@ -394,5 +394,13 @@
   "nova|tts-1|4 books available. Press 0 for search, 1 through 4 for books. Use up and down arrow keys to navigate.": "/audio/a178bb2d31c4adac97b34f8188ea73fdb232bf67.mp3",
   "nova|tts-1|Search box. Type a book title or author and press Enter.": "/audio/0edd5ac5b1b0f0132c1b29e551d0c846b5c1653f.mp3",
   "nova|tts-1|Press the down arrow to move to search results.": "/audio/ac290f3ce00a8c32c381959586ac6eb562288116.mp3",
-  "nova|tts-1|Press Escape to return to the library. Press 0 to search again.": "/audio/0fb0f29f82fa098286c69e9819ce7dbf4d7bb433.mp3"
+  "nova|tts-1|Press Escape to return to the library. Press 0 to search again.": "/audio/0fb0f29f82fa098286c69e9819ce7dbf4d7bb433.mp3",
+  "nova|tts-1|Now reading Frankenstein; or, the modern prometheus, Chapter 1.": "/audio/50fb49cb3dadcbc762242c47a21a493ed631e576.mp3",
+  "nova|tts-1|Now reading Frankenstein; or, the modern prometheus, Chapter 2.": "/audio/effd8632ad756787c10ce81491d69d28b64e359d.mp3",
+  "nova|tts-1|Now reading Moby Dick; Or, The Whale, Chapter 1: Loomings..": "/audio/6e0ee9fc9071050e621bc0e612c796fbf73c2d20.mp3",
+  "nova|tts-1|Now reading Moby Dick; Or, The Whale, Chapter 2: The Carpet-Bag..": "/audio/1df4c23951e8d682e4c508b6a887cfd2ca31a288.mp3",
+  "nova|tts-1|Now reading Pride and Prejudice, Chapter I.": "/audio/62c2b712f484f03c8d1fd7f45c6b99fe8a686923.mp3",
+  "nova|tts-1|Now reading Pride and Prejudice, Chapter II.": "/audio/ac0064d431952059f7809e401d8ce81dab8c1c3e.mp3",
+  "nova|tts-1|Now reading The King in Yellow, Part I.": "/audio/34c396c35afaa6cf17e4d7fc9d62b3f86317c0f0.mp3",
+  "nova|tts-1|Now reading The King in Yellow, Part II.": "/audio/e60c73a4f01cd4fc9fd23febcf4b7a8da1a16f91.mp3"
 }
