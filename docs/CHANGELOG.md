@@ -522,3 +522,91 @@ Format: Stage > Task > Agent > Status
   - Preloading ±3 sentences provides smooth TTS playback within paragraphs
   - Volume warning on welcome page reduces first-time user surprises
   - All voice guidance follows established `voiceDictionary` patterns and pre-generated audio caching strategy
+
+---
+
+## [Post-v1.0: Documentation & Mobile Support] — 2026-04-04
+- **Status**: ✅ Complete
+- **Agent**: Claude CLI
+- **Date**: 2026-04-04
+- **Changes**:
+
+  ### Docs Update — OpenAI TTS Migration
+  - `AGENTS.md`: removed "Web Speech API only" / "No external TTS libraries" references; updated Key Feature, Coding Standards, and Key Technical Decisions to reflect OpenAI TTS
+  - `claude.md`: updated stack line from Web Speech API → OpenAI TTS API
+  - `docs/features/tts-engine.md`: full rewrite — 3-layer cache architecture, `/api/tts` route spec, supported voices/models, pre-generation pipeline, event names
+  - `docs/design/architecture.md`: added `/api/tts → OpenAI TTS API` path to architecture diagram; updated browser compatibility table
+
+  ### New: docs/summary.md
+  - Project overview and significance (Korean)
+  - Tech stack table
+  - AI features: OpenAI TTS, Claude Haiku, voice-first UX concept
+  - High-level directory structure
+  - Major change history
+
+  ### Mobile Responsive UI
+  - `layout.tsx`: added explicit viewport meta (`width=device-width, initialScale=1, maximumScale=1`) to prevent iOS auto-zoom on input focus
+  - `page.tsx` (WELCOME): responsive heading size, `w-full max-w-xs` button, copy updated ("Tap to start" instead of "Move your mouse")
+  - `page.tsx` (LIBRARY): reduced padding on mobile, keyboard hint footer hidden on mobile (`hidden md:block`)
+  - `BookReader.tsx`: responsive top bar, `✕` icon replaces "Esc" text; bottom bar shows touch controls on mobile, keyboard hints on desktop
+    - Mobile touch controls: ⏮ ↑ ▶/⏸ ↓ ⏭ (52–64px tap targets, all reading actions)
+
+- **Files Modified**:
+  - `AGENTS.md`
+  - `claude.md`
+  - `docs/features/tts-engine.md`
+  - `docs/design/architecture.md`
+  - `src/app/layout.tsx`
+  - `src/app/page.tsx`
+  - `src/components/BookReader.tsx`
+- **Files Created**:
+  - `docs/summary.md`
+
+---
+
+## [Post-v1.0: Per-Book Audio Pre-generation & Manifest Restructure] — 2026-04-04
+- **Status**: ✅ Complete
+- **Agent**: Claude CLI
+- **Date**: 2026-04-04
+- **Changes**:
+
+  ### Audio Directory Restructure
+  - UI/navigation phrases remain in `/public/audio/manifest.json` (flat)
+  - Book sentences moved to per-book folders: `/public/audio/{book-id}/`
+  - Each book has its own `{book-id}.json` manifest mapping `"voice|model|text"` → `/audio/{book-id}/{sha1}.mp3`
+  - Old mixed book-sentence entries removed from flat manifest on rebuild
+
+  ### Full Chapter Pre-generation (No Char Limit)
+  - Previously: first 3000 chars of ch1+ch2 only
+  - Now: **all sentences** from chapters 1 and 2 for every book (full beta range)
+  - Generated: Frankenstein 160, Moby-Dick 155, Pride and Prejudice 119, The King in Yellow 383 sentences
+
+  ### generate-audio.mjs Rewrite
+  - Section 1 (UI phrases): generates UI-only main manifest; strips stale book entries on rebuild
+  - Section 2 (Book audio): per-book folder + per-book JSON manifest, no char limit
+  - `--ui-only` / `--books-only` flags for incremental reruns
+  - Added chapter-start announcements (`Now reading {title}, {chapter}.`) to UI phrases
+
+  ### speechUtils.ts — 4-layer Audio Resolution
+  1. In-memory blob cache (instant)
+  2. UI manifest `/audio/manifest.json`
+  3. Per-book manifests (loaded via `loadBookManifest(bookId)`)
+  4. Dynamic `/api/tts` fallback (only for text not in any manifest)
+  - New `loadBookManifest(bookId)`: fetches and caches per-book manifest; deduplicates concurrent fetches
+  - `prewarm()` also checks per-book manifests for static URL lookup
+
+  ### BookReader.tsx
+  - Calls `await loadBookManifest(book.id)` at chapter load start
+  - All book sentences now resolve from static CDN files — `/api/tts` not called during normal reading
+
+- **Files Modified**:
+  - `scripts/generate-audio.mjs`
+  - `src/lib/speechUtils.ts`
+  - `src/components/BookReader.tsx`
+- **Files Created/Updated**:
+  - `public/audio/manifest.json` (UI phrases only, rebuilt)
+  - `public/audio/frankenstein-or-the-modern-prometheus/frankenstein-or-the-modern-prometheus.json`
+  - `public/audio/moby-dick-or-the-whale/moby-dick-or-the-whale.json`
+  - `public/audio/pride-and-prejudice/pride-and-prejudice.json`
+  - `public/audio/the-king-in-yellow/the-king-in-yellow.json`
+  - 817 MP3 files across per-book folders
